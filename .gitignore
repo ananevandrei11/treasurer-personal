@@ -1,0 +1,31 @@
+node_modules
+.env
+.env.local
+.env.*.local
+
+# Next.js
+.next
+out
+
+# Nest.js / build
+dist
+
+# Prisma
+prisma/migrations/.migration_lock
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Testing
+coverage
+.nyc_output
+
+# Misc
+.DS_Store
+*.pem
+
+.playwright-mcp
+
+skills-lock.json
