@@ -1,8 +1,7 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { backendFetch, ApiError } from '@/shared/api'
-import { getAccessToken } from '@/shared/lib'
+import { fetchWithAuth, ApiError } from '@/shared/api'
 import { createTransactionSchema } from '../model/create-transaction'
 
 export type CreateTransactionState = {
@@ -30,16 +29,13 @@ export async function createTransactionAction(
     return { fieldErrors: parsed.error.flatten().fieldErrors, formError: null, success: false }
   }
 
-  const token = await getAccessToken()
-
   try {
-    await backendFetch('/transactions', {
+    await fetchWithAuth('/transactions', {
       method: 'POST',
       body: JSON.stringify({
         ...parsed.data,
         date: new Date(parsed.data.date).toISOString(),
       }),
-      headers: { Authorization: `Bearer ${token}` },
     })
   } catch (err) {
     if (err instanceof ApiError) {

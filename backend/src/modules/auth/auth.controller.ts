@@ -1,20 +1,12 @@
-import { Body, Controller, HttpCode, Post, Req, UseGuards } from '@nestjs/common'
+import { Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { Throttle } from '@nestjs/throttler'
-import type { Request } from 'express'
 import { AuthService } from './auth.service'
 import { RegisterDto } from './dto/register.dto'
 import { LoginDto } from './dto/login.dto'
 import type { AuthResponseDto, TokenPairDto } from './dto/auth-response.dto'
-
-interface JwtUser {
-  userId: string
-  email: string
-}
-
-interface JwtRefreshUser extends JwtUser {
-  refreshToken: string
-}
+import { CurrentUser } from '../../common/current-user.decorator'
+import type { JwtUser, JwtRefreshUser } from '../../common/current-user.decorator'
 
 @Controller('auth')
 export class AuthController {
@@ -36,16 +28,14 @@ export class AuthController {
   @Post('refresh')
   @HttpCode(200)
   @UseGuards(AuthGuard('jwt-refresh'))
-  refresh(@Req() req: Request): Promise<TokenPairDto> {
-    const { userId, refreshToken } = req.user as JwtRefreshUser
-    return this.authService.refresh(userId, refreshToken)
+  refresh(@CurrentUser() user: JwtRefreshUser): Promise<TokenPairDto> {
+    return this.authService.refresh(user.userId, user.refreshToken)
   }
 
   @Post('logout')
   @HttpCode(204)
   @UseGuards(AuthGuard('jwt'))
-  async logout(@Req() req: Request): Promise<void> {
-    const { userId } = req.user as JwtUser
-    await this.authService.logout(userId)
+  async logout(@CurrentUser() user: JwtUser): Promise<void> {
+    await this.authService.logout(user.userId)
   }
 }

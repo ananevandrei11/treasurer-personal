@@ -35,3 +35,8 @@ export async function getAccessToken(): Promise<string | undefined> {
   const store = await cookies()
   return store.get(ACCESS_TOKEN)?.value
 }
+
+export async function getRefreshToken(): Promise<string | undefined> {
+  const store = await cookies()
+  return store.get(REFRESH_TOKEN)?.value
+}
