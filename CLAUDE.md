@@ -84,6 +84,49 @@ Backend (`backend/.env`): `DATABASE_URL`, `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECR
 
 Frontend (`frontend/.env.local`): `NEXT_PUBLIC_API_URL`
 
+## Git Workflow (GitHub Flow)
+
+This project uses **GitHub Flow** — a lightweight branch-based workflow.
+
+### Rules
+
+- `main` is always deployable (stable, working code only)
+- Every feature, fix, or experiment lives in its own branch
+- Branch names follow the pattern: `<type>/<short-description>` (e.g., `feat/add-categories-page`, `fix/auth-refresh-token`)
+- Work on the branch; commit as often as needed
+- Before merging: run lint, typecheck, and manually verify the feature works
+- Merge into `main` only when the branch is complete and verified
+- Delete the branch after merging
+
+### Step-by-step
+
+```bash
+# 1. Start from an up-to-date main
+git checkout main && git pull
+
+# 2. Create a feature branch
+git checkout -b feat/my-feature
+
+# 3. Work, commit incrementally
+git add <files>
+git commit -m "feat(scope): description"
+
+# 4. Verify before merging
+pnpm typecheck
+pnpm --filter frontend lint
+pnpm --filter backend lint
+
+# 5. Merge into main
+git checkout main
+git merge --no-ff feat/my-feature   # --no-ff keeps branch history visible
+git push
+
+# 6. Clean up
+git branch -d feat/my-feature
+```
+
+> `--no-ff` (no fast-forward) creates a merge commit even when it isn't strictly required, which preserves the fact that a branch existed and groups all its commits together in the history.
+
 ## Commit Convention
 
 Follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
