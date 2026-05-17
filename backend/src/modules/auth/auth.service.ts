@@ -3,7 +3,7 @@ import { CommandBus, QueryBus } from '@nestjs/cqrs'
 import { JwtService } from '@nestjs/jwt'
 import { ConfigService } from '@nestjs/config'
 import * as bcrypt from 'bcrypt'
-import { createHash } from 'crypto'
+import { createHash, timingSafeEqual } from 'crypto'
 import type { User } from '@prisma/client'
 import type { RegisterDto } from './dto/register.dto'
 import type { LoginDto } from './dto/login.dto'
@@ -66,7 +66,11 @@ export class AuthService {
     if (!user?.refreshTokenHash) throw new UnauthorizedException('Access denied')
 
     const incomingHash = createHash('sha256').update(refreshToken).digest('hex')
-    if (incomingHash !== user.refreshTokenHash) throw new UnauthorizedException('Access denied')
+    const incomingBuf = Buffer.from(incomingHash, 'utf8')
+    const storedBuf = Buffer.from(user.refreshTokenHash, 'utf8')
+    if (incomingBuf.length !== storedBuf.length || !timingSafeEqual(new Uint8Array(incomingBuf), new Uint8Array(storedBuf))) {
+      throw new UnauthorizedException('Access denied')
+    }
 
     const tokens = await this.issueTokens(user)
     await this.commandBus.execute(new UpdateRefreshTokenHashCommand(user.id, tokens.refreshToken))

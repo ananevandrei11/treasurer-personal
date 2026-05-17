@@ -3,12 +3,12 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { ArrowLeftRightIcon, TagIcon, UserIcon } from 'lucide-react'
-import { cn } from '@/shared/lib/class-names'
+import { cn } from '@/shared/lib'
 
 const tabs = [
-  { href: '/', label: 'Транзакции', Icon: ArrowLeftRightIcon },
-  { href: '/categories', label: 'Категории', Icon: TagIcon },
-  { href: '/profile', label: 'Профиль', Icon: UserIcon },
+  { href: '/', label: 'Transactions', Icon: ArrowLeftRightIcon },
+  { href: '/categories', label: 'Categories', Icon: TagIcon },
+  { href: '/profile', label: 'Profile', Icon: UserIcon },
 ]
 
 export function MobileTabBar() {

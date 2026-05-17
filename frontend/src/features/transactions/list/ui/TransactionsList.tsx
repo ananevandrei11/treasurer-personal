@@ -17,7 +17,7 @@ export async function TransactionsList({ page }: Props) {
   if (data.transactions.length === 0) {
     return (
       <div className="py-16 text-center text-sm text-muted-foreground">
-        Транзакций пока нет. Добавьте первую!
+        No transactions yet. Add your first one!
       </div>
     )
   }

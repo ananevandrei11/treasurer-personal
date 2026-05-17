@@ -43,9 +43,9 @@ export async function createTransactionAction(
     })
   } catch (err) {
     if (err instanceof ApiError) {
-      return { ...initialState, formError: `Ошибка сервера: ${err.message}` }
+      return { ...initialState, formError: `Server error: ${err.message}` }
     }
-    return { ...initialState, formError: 'Что-то пошло не так. Попробуйте снова.' }
+    return { ...initialState, formError: 'Something went wrong. Please try again.' }
   }
 
   revalidatePath('/')

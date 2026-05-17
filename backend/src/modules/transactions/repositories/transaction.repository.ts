@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '../../../prisma/prisma.service'
-import type { Transaction, TransactionType, Prisma } from '@prisma/client'
+import type { Transaction, TransactionType } from '@prisma/client'
 
 @Injectable()
 export class TransactionRepository {
@@ -42,11 +42,7 @@ export class TransactionRepository {
     })
   }
 
-  sumByTypeForUser(
-    userId: string,
-    dateFrom?: Date,
-    dateTo?: Date,
-  ): Promise<{ type: TransactionType; _sum: { amount: Prisma.Decimal | null } }[]> {
+  sumByTypeForUser(userId: string, dateFrom?: Date, dateTo?: Date) {
     return this.prisma.transaction.groupBy({
       by: ['type'],
       where: {
@@ -54,7 +50,7 @@ export class TransactionRepository {
         ...(dateFrom && dateTo ? { date: { gte: dateFrom, lte: dateTo } } : {}),
       },
       _sum: { amount: true },
-    }) as unknown as Promise<{ type: TransactionType; _sum: { amount: Prisma.Decimal | null } }[]>
+    })
   }
 
   findByIdForUser(id: string, userId: string): Promise<Transaction | null> {
