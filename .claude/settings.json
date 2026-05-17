@@ -11,10 +11,10 @@
       "LS"
     ],
     "deny": [
-      "Bash(git push *)",
       "Read(**/.env*)"
     ],
     "ask": [
+      "Bash(git push *)",
       "Bash(git commit *)"
     ]
   },
