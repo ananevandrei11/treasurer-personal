@@ -7,10 +7,11 @@ import path from 'node:path'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export default tseslint.config(
-  { ignores: ['.next/**', 'node_modules/**'] },
+  { ignores: ['.next/**', 'node_modules/**', '*.mjs'] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
+    files: ['**/*.ts', '**/*.tsx'],
     languageOptions: {
       parserOptions: {
         tsconfigRootDir: __dirname,
