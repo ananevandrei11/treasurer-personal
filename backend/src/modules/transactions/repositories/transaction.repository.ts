@@ -17,13 +17,28 @@ export class TransactionRepository {
     return this.prisma.transaction.create({ data })
   }
 
-  findAllByUser(userId: string, dateFrom?: Date, dateTo?: Date): Promise<Transaction[]> {
+  findAllByUser(
+    userId: string,
+    dateFrom?: Date,
+    dateTo?: Date,
+    pagination?: { skip: number; take: number },
+  ): Promise<Transaction[]> {
     return this.prisma.transaction.findMany({
       where: {
         userId,
         ...(dateFrom && dateTo ? { date: { gte: dateFrom, lte: dateTo } } : {}),
       },
       orderBy: { date: 'desc' },
+      ...(pagination ? { skip: pagination.skip, take: pagination.take } : {}),
+    })
+  }
+
+  countByUser(userId: string, dateFrom?: Date, dateTo?: Date): Promise<number> {
+    return this.prisma.transaction.count({
+      where: {
+        userId,
+        ...(dateFrom && dateTo ? { date: { gte: dateFrom, lte: dateTo } } : {}),
+      },
     })
   }
 
