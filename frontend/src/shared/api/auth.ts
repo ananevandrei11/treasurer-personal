@@ -6,8 +6,11 @@ export type User = {
   updatedAt: string
 }
 
-export type AuthResponse = {
-  user: User
+export type TokenPair = {
   accessToken: string
   refreshToken: string
 }
+
+export type AuthResponse = {
+  user: User
+} & TokenPair

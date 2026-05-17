@@ -1,2 +1,2 @@
 export { cn } from './class-names'
-export { setSession, clearSession, getAccessToken } from './session'
+export { setSession, clearSession, getAccessToken, getRefreshToken } from './session'
