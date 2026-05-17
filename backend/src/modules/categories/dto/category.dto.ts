@@ -3,7 +3,6 @@ export class CategoryDto {
   name!: string
   color!: string
   icon!: string
-  userId!: string
   createdAt!: Date
   updatedAt!: Date
 
@@ -12,7 +11,6 @@ export class CategoryDto {
     name: string
     color: string
     icon: string
-    userId: string
     createdAt: Date
     updatedAt: Date
   }): CategoryDto {
@@ -21,7 +19,6 @@ export class CategoryDto {
     dto.name = category.name
     dto.color = category.color
     dto.icon = category.icon
-    dto.userId = category.userId
     dto.createdAt = category.createdAt
     dto.updatedAt = category.updatedAt
     return dto

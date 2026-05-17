@@ -149,6 +149,14 @@ Rules:
 - Breaking change: append `!` after type/scope → `feat(auth)!: change token format`
 - Body/footer optional; use for breaking changes or issue references
 
+## Language
+
+The app UI is **English**. All strings that end up in the product — button labels, validation messages, headings, placeholders, aria-labels, error copy, page titles — must be in English.
+
+Communication with the user in this Claude session is Russian. Do not confuse the two.
+
+The app has no i18n framework and is English-only. Do not add one.
+
 ## Implementation Status
 
 The project is in early scaffold stage. Most service methods (auth, users, accounts, categories, transactions) throw `Error('Not implemented')`. Prisma models have not yet been added to the schema.

@@ -1,6 +1,8 @@
-import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common'
+import { Controller, Get, Post, Put, Delete, Param, Body, UseGuards, HttpCode, HttpStatus } from '@nestjs/common'
+import { AuthGuard } from '@nestjs/passport'
 import { AccountsService } from './accounts.service'
 
+@UseGuards(AuthGuard('jwt'))
 @Controller('accounts')
 export class AccountsController {
   constructor(private readonly accountsService: AccountsService) {}
@@ -21,6 +23,7 @@ export class AccountsController {
   }
 
   @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: string) {
     return this.accountsService.remove(id)
   }

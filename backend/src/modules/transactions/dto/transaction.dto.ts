@@ -1,4 +1,4 @@
-import type { Transaction, TransactionType, Prisma } from '@prisma/client'
+import type { Transaction, TransactionType } from '@prisma/client'
 
 export class TransactionDto {
   id!: string
@@ -7,11 +7,10 @@ export class TransactionDto {
   description!: string | null
   date!: Date
   categoryId!: string
-  userId!: string
   createdAt!: Date
   updatedAt!: Date
 
-  static fromEntity(entity: Transaction & { amount: Prisma.Decimal }): TransactionDto {
+  static fromEntity(entity: Transaction): TransactionDto {
     const dto = new TransactionDto()
     dto.id = entity.id
     dto.amount = entity.amount.toString()
@@ -19,7 +18,6 @@ export class TransactionDto {
     dto.description = entity.description
     dto.date = entity.date
     dto.categoryId = entity.categoryId
-    dto.userId = entity.userId
     dto.createdAt = entity.createdAt
     dto.updatedAt = entity.updatedAt
     return dto

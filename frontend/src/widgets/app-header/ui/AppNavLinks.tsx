@@ -2,11 +2,11 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { cn } from '@/shared/lib/class-names'
+import { cn } from '@/shared/lib'
 
 const links = [
-  { href: '/', label: 'Транзакции' },
-  { href: '/categories', label: 'Категории' },
+  { href: '/', label: 'Transactions' },
+  { href: '/categories', label: 'Categories' },
 ]
 
 export function AppNavLinks() {

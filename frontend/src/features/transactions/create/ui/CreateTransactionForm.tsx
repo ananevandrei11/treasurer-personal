@@ -22,7 +22,7 @@ function SubmitButton() {
   const { pending } = useFormStatus()
   return (
     <Button type="submit" disabled={pending} className="w-full">
-      {pending ? 'Сохранение…' : 'Добавить'}
+      {pending ? 'Saving…' : 'Add'}
     </Button>
   )
 }
@@ -47,12 +47,12 @@ export function CreateTransactionForm({ categories, onSuccess }: Props) {
 
       <FieldGroup>
         <Field>
-          <FieldLabel>Тип</FieldLabel>
+          <FieldLabel>Type</FieldLabel>
           <div className="flex gap-3 pt-1">
             {(['EXPENSE', 'INCOME'] as const).map((type) => (
               <label key={type} className="flex items-center gap-2 cursor-pointer text-sm">
                 <input type="radio" name="type" value={type} defaultChecked={type === 'EXPENSE'} />
-                {type === 'INCOME' ? 'Доход' : 'Расход'}
+                {type === 'INCOME' ? 'Income' : 'Expense'}
               </label>
             ))}
           </div>
@@ -60,7 +60,7 @@ export function CreateTransactionForm({ categories, onSuccess }: Props) {
         </Field>
 
         <Field data-invalid={!!err('amount')}>
-          <FieldLabel htmlFor="amount">Сумма</FieldLabel>
+          <FieldLabel htmlFor="amount">Amount</FieldLabel>
           <Input
             id="amount"
             name="amount"
@@ -73,13 +73,13 @@ export function CreateTransactionForm({ categories, onSuccess }: Props) {
         </Field>
 
         <Field data-invalid={!!err('categoryId')}>
-          <FieldLabel htmlFor="categoryId">Категория</FieldLabel>
+          <FieldLabel htmlFor="categoryId">Category</FieldLabel>
           <select
             id="categoryId"
             name="categoryId"
             className="flex h-8 w-full rounded-lg border border-input bg-background px-2.5 text-sm outline-none focus:border-ring focus:ring-3 focus:ring-ring/50"
           >
-            <option value="">Выберите категорию</option>
+            <option value="">Select category</option>
             {categories.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.icon} {c.name}
@@ -90,7 +90,7 @@ export function CreateTransactionForm({ categories, onSuccess }: Props) {
         </Field>
 
         <Field data-invalid={!!err('date')}>
-          <FieldLabel htmlFor="date">Дата</FieldLabel>
+          <FieldLabel htmlFor="date">Date</FieldLabel>
           <Input
             id="date"
             name="date"
@@ -102,12 +102,12 @@ export function CreateTransactionForm({ categories, onSuccess }: Props) {
         </Field>
 
         <Field>
-          <FieldLabel htmlFor="description">Описание (необязательно)</FieldLabel>
+          <FieldLabel htmlFor="description">Description (optional)</FieldLabel>
           <Input
             id="description"
             name="description"
             type="text"
-            placeholder="Например: обед в кафе"
+            placeholder="e.g. lunch at cafe"
           />
         </Field>
       </FieldGroup>

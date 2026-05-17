@@ -1,7 +1,6 @@
 import { Suspense } from 'react'
-import { TransactionsList } from '@/features/transactions/list'
+import { TransactionsList, getCategories } from '@/features/transactions/list'
 import { AddTransactionTrigger } from '@/features/transactions/create'
-import { getCategories } from '@/features/transactions/list/api/get-categories'
 
 type Props = { page: number }
 
@@ -11,7 +10,7 @@ export async function DashboardView({ page }: Props) {
   return (
     <div className="mx-auto max-w-5xl px-4 py-6">
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-xl font-semibold">Транзакции</h1>
+        <h1 className="text-xl font-semibold">Transactions</h1>
         <AddTransactionTrigger categories={categories} />
       </div>
 

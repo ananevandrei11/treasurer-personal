@@ -1,6 +1,6 @@
 import type { Transaction } from '@/shared/api'
 import type { Category } from '@/shared/api'
-import { cn } from '@/shared/lib/class-names'
+import { cn } from '@/shared/lib'
 
 type Props = {
   transaction: Transaction
@@ -9,7 +9,7 @@ type Props = {
 
 export function TransactionItem({ transaction, category }: Props) {
   const isIncome = transaction.type === 'INCOME'
-  const date = new Date(transaction.date).toLocaleDateString('ru-RU', {
+  const date = new Date(transaction.date).toLocaleDateString('en-US', {
     day: '2-digit',
     month: 'short',
     year: 'numeric',
@@ -40,7 +40,10 @@ export function TransactionItem({ transaction, category }: Props) {
           isIncome ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400',
         )}
       >
-        {isIncome ? '+' : '−'}{Number(transaction.amount).toFixed(2)} ₽
+        {isIncome ? '+' : '−'}
+      {new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(
+        Number(transaction.amount),
+      )}
       </span>
     </div>
   )

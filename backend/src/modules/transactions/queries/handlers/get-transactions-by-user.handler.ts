@@ -2,7 +2,6 @@ import { QueryHandler } from '@nestjs/cqrs'
 import type { IQueryHandler } from '@nestjs/cqrs'
 import { BadRequestException } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
-import type { Transaction } from '@prisma/client'
 import { GetTransactionsByUserQuery } from '../get-transactions-by-user.query'
 import { TransactionRepository } from '../../repositories/transaction.repository'
 import { ListTransactionsDto } from '../../dto/list-transactions.dto'
@@ -47,9 +46,7 @@ export class GetTransactionsByUserHandler
     const balance = totalIncome.minus(totalExpense)
 
     const result = new ListTransactionsDto()
-    result.transactions = transactions.map((t) =>
-      TransactionDto.fromEntity(t as Transaction & { amount: Prisma.Decimal }),
-    )
+    result.transactions = transactions.map((t) => TransactionDto.fromEntity(t))
     result.summary = {
       totalIncome: totalIncome.toFixed(2),
       totalExpense: totalExpense.toFixed(2),

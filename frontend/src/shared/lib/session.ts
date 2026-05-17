@@ -11,14 +11,14 @@ export async function setSession(tokens: { accessToken: string; refreshToken: st
   const store = await cookies()
   store.set(ACCESS_TOKEN, tokens.accessToken, {
     httpOnly: true,
-    sameSite: 'lax',
+    sameSite: 'strict',
     secure: IS_PROD,
     path: '/',
     maxAge: 60 * 15,
   })
   store.set(REFRESH_TOKEN, tokens.refreshToken, {
     httpOnly: true,
-    sameSite: 'lax',
+    sameSite: 'strict',
     secure: IS_PROD,
     path: '/',
     maxAge: 60 * 60 * 24 * 7,

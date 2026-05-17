@@ -29,7 +29,7 @@ export function TransactionsPagination({ pagination }: Props) {
         size="icon-sm"
         disabled={page <= 1}
         onClick={() => goTo(page - 1)}
-        aria-label="Предыдущая страница"
+        aria-label="Previous page"
       >
         <ChevronLeftIcon />
       </Button>
@@ -51,7 +51,7 @@ export function TransactionsPagination({ pagination }: Props) {
         size="icon-sm"
         disabled={page >= totalPages}
         onClick={() => goTo(page + 1)}
-        aria-label="Следующая страница"
+        aria-label="Next page"
       >
         <ChevronRightIcon />
       </Button>

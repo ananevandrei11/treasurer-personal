@@ -15,11 +15,11 @@ export function AddTransactionTrigger({ categories }: Props) {
     <Sheet open={open} onOpenChange={setOpen}>
       <Button onClick={() => setOpen(true)}>
         <PlusIcon />
-        Добавить
+        Add
       </Button>
       <SheetContent side="right">
         <SheetHeader>
-          <SheetTitle>Новая транзакция</SheetTitle>
+          <SheetTitle>New transaction</SheetTitle>
         </SheetHeader>
         <CreateTransactionForm
           categories={categories}

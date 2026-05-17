@@ -21,7 +21,6 @@ import { UpdateTransactionDto } from './dto/update-transaction.dto'
 import { ListTransactionsQueryDto } from './dto/list-transactions-query.dto'
 import { TransactionDto } from './dto/transaction.dto'
 import { ListTransactionsDto } from './dto/list-transactions.dto'
-import type { Transaction, Prisma } from '@prisma/client'
 
 interface JwtUser {
   userId: string
@@ -43,7 +42,7 @@ export class TransactionsController {
   async create(@Req() req: Request, @Body() dto: CreateTransactionDto): Promise<TransactionDto> {
     const { userId } = req.user as JwtUser
     const transaction = await this.transactionsService.create(userId, dto)
-    return TransactionDto.fromEntity(transaction as Transaction & { amount: Prisma.Decimal })
+    return TransactionDto.fromEntity(transaction)
   }
 
   @Get(':id')
@@ -51,7 +50,7 @@ export class TransactionsController {
     const { userId } = req.user as JwtUser
     const transaction = await this.transactionsService.findOne(id, userId)
     if (!transaction) throw new NotFoundException()
-    return TransactionDto.fromEntity(transaction as Transaction & { amount: Prisma.Decimal })
+    return TransactionDto.fromEntity(transaction)
   }
 
   @Patch(':id')
@@ -62,7 +61,7 @@ export class TransactionsController {
   ): Promise<TransactionDto> {
     const { userId } = req.user as JwtUser
     const transaction = await this.transactionsService.update(id, userId, dto)
-    return TransactionDto.fromEntity(transaction as Transaction & { amount: Prisma.Decimal })
+    return TransactionDto.fromEntity(transaction)
   }
 
   @Delete(':id')

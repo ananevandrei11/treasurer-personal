@@ -15,7 +15,7 @@ export default async function ProfilePage() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-6">
-      <h1 className="text-xl font-semibold">Профиль</h1>
+      <h1 className="text-xl font-semibold">Profile</h1>
       <div className="mt-6 flex flex-col gap-4 rounded-lg border border-border p-4">
         <div>
           <p className="text-xs text-muted-foreground">Email</p>
@@ -23,12 +23,12 @@ export default async function ProfilePage() {
         </div>
         {user.name && (
           <div>
-            <p className="text-xs text-muted-foreground">Имя</p>
+            <p className="text-xs text-muted-foreground">Name</p>
             <p className="text-sm font-medium">{user.name}</p>
           </div>
         )}
         <form action={logoutAction}>
-          <Button type="submit" variant="destructive">Выйти</Button>
+          <Button type="submit" variant="destructive">Sign out</Button>
         </form>
       </div>
     </div>
