@@ -32,3 +32,6 @@ skills-lock.json
 */tsconfig.tsbuildinfo
 frontend/*.tsbuildinfo
 .github_token.txt
+
+# Claude Code project-local memory
+.claude/memory/
