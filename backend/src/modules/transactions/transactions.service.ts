@@ -17,8 +17,8 @@ export class TransactionsService {
     private readonly queryBus: QueryBus,
   ) {}
 
-  findAll(userId: string, month?: number, year?: number): Promise<ListTransactionsDto> {
-    return this.queryBus.execute(new GetTransactionsByUserQuery(userId, month, year))
+  findAll(userId: string, month?: number, year?: number, page = 1, limit = 10): Promise<ListTransactionsDto> {
+    return this.queryBus.execute(new GetTransactionsByUserQuery(userId, month, year, page, limit))
   }
 
   findOne(id: string, userId: string): Promise<Transaction | null> {

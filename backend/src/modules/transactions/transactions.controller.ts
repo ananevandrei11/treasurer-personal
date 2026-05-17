@@ -36,7 +36,7 @@ export class TransactionsController {
   @Get()
   findAll(@Req() req: Request, @Query() query: ListTransactionsQueryDto): Promise<ListTransactionsDto> {
     const { userId } = req.user as JwtUser
-    return this.transactionsService.findAll(userId, query.month, query.year)
+    return this.transactionsService.findAll(userId, query.month, query.year, query.page ?? 1, query.limit ?? 10)
   }
 
   @Post()

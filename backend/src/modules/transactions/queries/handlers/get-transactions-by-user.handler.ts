@@ -15,7 +15,7 @@ export class GetTransactionsByUserHandler
   constructor(private readonly transactionRepo: TransactionRepository) {}
 
   async execute(query: GetTransactionsByUserQuery): Promise<ListTransactionsDto> {
-    const { userId, month, year } = query
+    const { userId, month, year, page, limit } = query
     const hasMonth = month !== undefined
     const hasYear = year !== undefined
 
@@ -31,8 +31,11 @@ export class GetTransactionsByUserHandler
       dateTo = new Date(year!, month!, 0, 23, 59, 59, 999)
     }
 
-    const [transactions, sums] = await Promise.all([
-      this.transactionRepo.findAllByUser(userId, dateFrom, dateTo),
+    const skip = (page - 1) * limit
+
+    const [transactions, total, sums] = await Promise.all([
+      this.transactionRepo.findAllByUser(userId, dateFrom, dateTo, { skip, take: limit }),
+      this.transactionRepo.countByUser(userId, dateFrom, dateTo),
       this.transactionRepo.sumByTypeForUser(userId, dateFrom, dateTo),
     ])
 
@@ -51,7 +54,13 @@ export class GetTransactionsByUserHandler
       totalIncome: totalIncome.toFixed(2),
       totalExpense: totalExpense.toFixed(2),
       balance: balance.toFixed(2),
-      count: transactions.length,
+      count: total,
+    }
+    result.pagination = {
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
     }
 
     return result
