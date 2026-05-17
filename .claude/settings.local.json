@@ -27,11 +27,10 @@
       "mcp__plugin_chrome-devtools-mcp_chrome-devtools__list_pages",
       "Bash(curl -s -I http://localhost:3001/api/auth/login)"
     ],
-    "deny": [
-      "Bash(gh push *)"
-    ],
+    "deny": [],
     "ask": [
-      "Bash(gh commit *)"
+      "Bash(gh commit *)",
+      "Bash(gh push *)"
     ]
   },
   "outputStyle": "default"

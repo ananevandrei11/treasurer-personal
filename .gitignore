@@ -31,3 +31,4 @@ coverage
 skills-lock.json
 */tsconfig.tsbuildinfo
 frontend/*.tsbuildinfo
+.github_token.txt
