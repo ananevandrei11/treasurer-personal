@@ -1,154 +1,146 @@
 'use client'
 
-import { useActionState } from 'react'
+import { useActionState, useState, useEffect } from 'react'
 import { useFormStatus } from 'react-dom'
 import Link from 'next/link'
-import { Checkbox } from '@/shared/ui'
+import {
+  Alert, AlertDescription,
+  Button,
+  Card, CardContent, CardHeader,
+  Checkbox,
+  Field, FieldContent, FieldDescription, FieldError, FieldGroup, FieldLabel,
+  Input,
+} from '@/shared/ui'
 import { registerAction, type RegisterState } from '../api/register-action'
 
 const initialState: RegisterState = { fieldErrors: {}, formError: null }
 
-const inputCls =
-  'w-full rounded-xl border border-input bg-background px-4 py-3.5 text-base text-foreground placeholder:text-muted-foreground outline-none ring-offset-background transition focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 aria-[invalid=true]:border-destructive aria-[invalid=true]:ring-destructive/30'
+type FieldKey = keyof RegisterState['fieldErrors']
 
 function SubmitButton() {
   const { pending } = useFormStatus()
   return (
-    <button
-      type="submit"
-      disabled={pending}
-      className="flex w-full items-center justify-center rounded-xl bg-primary px-4 py-3.5 text-base font-semibold text-primary-foreground transition hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
-    >
+    <Button type="submit" disabled={pending} size="lg">
       {pending ? 'Creating account…' : 'Create account'}
-    </button>
+    </Button>
   )
 }
 
 export function RegisterForm() {
   const [state, action] = useActionState(registerAction, initialState)
+  const [dirtyFields, setDirtyFields] = useState<Set<FieldKey>>(new Set())
+
+  useEffect(() => {
+    setDirtyFields(new Set())
+  }, [state])
+
+  const markDirty = (field: FieldKey) =>
+    setDirtyFields((prev) => new Set([...prev, field]))
+
+  const hasError = (field: FieldKey) =>
+    !dirtyFields.has(field) && !!state.fieldErrors[field]
+
+  const errorMsg = (field: FieldKey) =>
+    dirtyFields.has(field) ? undefined : state.fieldErrors[field]?.[0]
 
   return (
-    <div className="w-full max-w-md rounded-2xl border border-border bg-card px-10 py-12 shadow-2xl shadow-black/10">
-      <div className="mb-8">
+    <Card className="w-full max-w-md">
+      <CardHeader>
         <span className="text-sm font-medium uppercase tracking-widest text-muted-foreground">
           💰 Treasurer
         </span>
-        <h1 className="mt-4 text-3xl font-bold tracking-tight">Create your account</h1>
-        <p className="mt-1.5 text-base text-muted-foreground">
-          Start managing your finances today
-        </p>
-      </div>
+        <h1 className="text-3xl font-bold tracking-tight">Create your account</h1>
+        <p className="text-muted-foreground">Start managing your finances today</p>
+      </CardHeader>
 
-      <form action={action} noValidate className="flex flex-col gap-5">
-        {state.formError && (
-          <div className="rounded-xl border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-            {state.formError}
-          </div>
-        )}
-
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="name" className="text-sm font-medium text-foreground">
-            Name
-          </label>
-          <input
-            id="name"
-            name="name"
-            type="text"
-            autoComplete="name"
-            placeholder="John Doe"
-            aria-invalid={state.fieldErrors.name ? 'true' : undefined}
-            className={inputCls}
-          />
-          {state.fieldErrors.name && (
-            <p className="text-xs text-destructive">{state.fieldErrors.name[0]}</p>
+      <CardContent>
+        <form action={action} noValidate className="flex flex-col gap-5">
+          {state.formError && (
+            <Alert variant="destructive">
+              <AlertDescription>{state.formError}</AlertDescription>
+            </Alert>
           )}
-        </div>
 
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="email" className="text-sm font-medium text-foreground">
-            Email
-          </label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            placeholder="you@example.com"
-            aria-invalid={state.fieldErrors.email ? 'true' : undefined}
-            className={inputCls}
-          />
-          {state.fieldErrors.email && (
-            <p className="text-xs text-destructive">{state.fieldErrors.email[0]}</p>
-          )}
-        </div>
+          <FieldGroup>
+            <Field data-invalid={hasError('name')}>
+              <FieldLabel htmlFor="name">Name</FieldLabel>
+              <Input
+                id="name"
+                name="name"
+                type="text"
+                autoComplete="name"
+                placeholder="John Doe"
+                aria-invalid={hasError('name') || undefined}
+                onChange={() => markDirty('name')}
+              />
+              <FieldError>{errorMsg('name')}</FieldError>
+            </Field>
 
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="password" className="text-sm font-medium text-foreground">
-            Password
-          </label>
-          <input
-            id="password"
-            name="password"
-            type="password"
-            autoComplete="new-password"
-            placeholder="At least 8 characters"
-            aria-invalid={state.fieldErrors.password ? 'true' : undefined}
-            className={inputCls}
-          />
-          {state.fieldErrors.password && (
-            <p className="text-xs text-destructive">{state.fieldErrors.password[0]}</p>
-          )}
-        </div>
+            <Field data-invalid={hasError('email')}>
+              <FieldLabel htmlFor="email">Email</FieldLabel>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                placeholder="you@example.com"
+                aria-invalid={hasError('email') || undefined}
+                onChange={() => markDirty('email')}
+              />
+              <FieldError>{errorMsg('email')}</FieldError>
+            </Field>
 
-        <div className="flex flex-col gap-1.5">
-          <div className="flex items-start gap-3">
-            <Checkbox
-              id="terms"
-              name="terms"
-              aria-invalid={state.fieldErrors.terms ? true : undefined}
-              className="mt-0.5"
-            />
-            <label
-              htmlFor="terms"
-              className="text-sm text-muted-foreground leading-snug cursor-pointer"
-            >
-              I agree to the{' '}
-              <Link
-                href="/terms"
-                className="font-medium text-foreground underline underline-offset-4 hover:opacity-70 transition-opacity"
-                onClick={(e) => e.stopPropagation()}
-              >
-                Terms of Service
-              </Link>{' '}
-              and{' '}
-              <Link
-                href="/privacy"
-                className="font-medium text-foreground underline underline-offset-4 hover:opacity-70 transition-opacity"
-                onClick={(e) => e.stopPropagation()}
-              >
-                Privacy Policy
-              </Link>
-            </label>
-          </div>
-          {state.fieldErrors.terms && (
-            <p className="text-xs text-destructive">{state.fieldErrors.terms[0]}</p>
-          )}
-        </div>
+            <Field data-invalid={hasError('password')}>
+              <FieldLabel htmlFor="password">Password</FieldLabel>
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                autoComplete="new-password"
+                placeholder="At least 8 characters"
+                aria-invalid={hasError('password') || undefined}
+                onChange={() => markDirty('password')}
+              />
+              <FieldError>{errorMsg('password')}</FieldError>
+            </Field>
 
-        <div className="mt-1">
+            <Field data-invalid={hasError('terms')}>
+              <FieldLabel htmlFor="terms">
+                <Checkbox
+                  id="terms"
+                  name="terms"
+                  aria-invalid={hasError('terms') || undefined}
+                  onCheckedChange={() => markDirty('terms')}
+                />
+                <FieldContent>
+                  <FieldDescription>
+                    I agree to the{' '}
+                    <Link href="/terms" onClick={(e) => e.stopPropagation()}>
+                      Terms of Service
+                    </Link>{' '}
+                    and{' '}
+                    <Link href="/privacy" onClick={(e) => e.stopPropagation()}>
+                      Privacy Policy
+                    </Link>
+                  </FieldDescription>
+                </FieldContent>
+              </FieldLabel>
+              <FieldError>{errorMsg('terms')}</FieldError>
+            </Field>
+          </FieldGroup>
+
           <SubmitButton />
-        </div>
 
-        <p className="text-center text-sm text-muted-foreground">
-          Already have an account?{' '}
-          <Link
-            href="/login"
-            className="font-semibold text-foreground underline underline-offset-4 hover:opacity-70 transition-opacity"
-          >
-            Sign in
-          </Link>
-        </p>
-      </form>
-    </div>
+          <p className="text-center text-sm text-muted-foreground">
+            Already have an account?{' '}
+            <Link
+              href="/login"
+            >
+              Sign in
+            </Link>
+          </p>
+        </form>
+      </CardContent>
+    </Card>
   )
 }

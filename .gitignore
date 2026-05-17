@@ -29,3 +29,5 @@ coverage
 .playwright-mcp
 
 skills-lock.json
+*/tsconfig.tsbuildinfo
+frontend/*.tsbuildinfo
