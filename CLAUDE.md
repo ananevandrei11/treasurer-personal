@@ -84,6 +84,28 @@ Backend (`backend/.env`): `DATABASE_URL`, `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECR
 
 Frontend (`frontend/.env.local`): `NEXT_PUBLIC_API_URL`
 
+## Commit Convention
+
+Follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
+
+Format: `<type>(<scope>): <description>`
+
+**Types:** `feat`, `fix`, `refactor`, `chore`, `docs`, `test`, `style`, `perf`
+
+**Scope** (optional): module or layer affected — `auth`, `transactions`, `accounts`, `categories`, `ui`, `prisma`, `config`
+
+```
+feat(transactions): add create transaction endpoint
+fix(auth): handle expired refresh token
+refactor(ui): extract button to shared/ui
+chore(prisma): add Transaction model migration
+```
+
+Rules:
+- Description in imperative mood, lowercase, no period at the end
+- Breaking change: append `!` after type/scope → `feat(auth)!: change token format`
+- Body/footer optional; use for breaking changes or issue references
+
 ## Implementation Status
 
 The project is in early scaffold stage. Most service methods (auth, users, accounts, categories, transactions) throw `Error('Not implemented')`. Prisma models have not yet been added to the schema.

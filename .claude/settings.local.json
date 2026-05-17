@@ -17,7 +17,9 @@
       "mcp__plugin_playwright_playwright__browser_navigate",
       "mcp__plugin_playwright_playwright__browser_take_screenshot",
       "Skill(frontend-engineer)",
-      "Skill(chrome-devtools-mcp:chrome-devtools)"
+      "Skill(chrome-devtools-mcp:chrome-devtools)",
+      "Bash(npx prisma *)",
+      "Bash(docker exec treasurer_postgres *)"
     ],
     "deny": [],
     "ask": []

@@ -1,0 +1,18 @@
+## Задача
+Центральный модуль учёта доходов и расходов.
+
+## Модель данных
+Транзакция: id, amount, type (income/expense), description, date, categoryId, userId
+
+## Контроллер
+POST /transactions, GET /transactions (агрегация по month/year),
+GET /transactions/:id, PATCH /transactions/:id, DELETE /transactions/:id
+
+
+## Паттерн
+- Следуй структуре модуля из backend/src/modules/categories/
+- Взаимодействие через CQRS
+
+## Ограничения
+- Не добавлять зависимости без указания
+- class-validator для DTO
