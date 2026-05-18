@@ -1,6 +1,7 @@
 import { IsOptional, IsInt, Min, Max } from 'class-validator'
 import { Type } from 'class-transformer'
 
+/** Query string parameters for the GET /transactions endpoint. */
 export class ListTransactionsQueryDto {
   @IsOptional()
   @Type(() => Number)
