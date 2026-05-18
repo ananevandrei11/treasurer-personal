@@ -74,7 +74,7 @@ src/
     auth/{login,register,logout}/
     transactions/{list,create}/
   shared/
-    api/                   → DTO types + backendFetch
+    api/                   → DTO types + backendFetch / fetchWithAuth
     config/                → env access
     lib/                   → session (cookies), cn (class-names)
     ui/                    → shadcn/ui components
@@ -93,20 +93,31 @@ src/
   - `accessToken` — 15 min, `httpOnly`, `sameSite: 'strict'`, `secure` in production
   - `refreshToken` — 7 days, same flags
 - `setSession({ accessToken, refreshToken })` after a successful auth response; `clearSession()` on logout.
-- `getAccessToken()` is the only way to read the token — call it from RSCs and Server Actions, never from `'use client'`.
-- Route protection: `app/(app)/layout.tsx` calls `getAccessToken()`, fetches `/users/me`, and `redirect('/login')` on failure. There is no middleware-based protection — the layout is the gate.
+- `getAccessToken()` / `getRefreshToken()` read cookies — call them from RSCs and Server Actions, never from `'use client'`. In feature/view/widget code prefer `fetchWithAuth` so you don't have to touch tokens at all.
+- Route protection: `app/(app)/layout.tsx` calls `fetchWithAuth<User>('/users/me')`; on failure `fetchWithAuth` itself `redirect('/login')`s. There is no middleware-based protection — the layout is the gate.
 
 ## HTTP Client
 
-- All backend calls go through `backendFetch<T>(path, init?)` from `@/shared/api` ([`src/shared/api/http.ts`](src/shared/api/http.ts)).
-- Base URL: `API_URL` from `@/shared/config` (reads `NEXT_PUBLIC_API_URL`, defaults to `http://localhost:3001` in dev; **required** in production).
-- Sets `Content-Type: application/json` and `cache: 'no-store'` by default.
-- Authenticated requests must pass `Authorization: Bearer ${token}` explicitly:
-  ```ts
-  const token = await getAccessToken()
-  return backendFetch<User>('/users/me', { headers: { Authorization: `Bearer ${token}` } })
-  ```
-- Non-2xx responses throw **`ApiError`** with `status` and a normalized `message` (joins `class-validator` array errors). Catch `ApiError` in Server Actions to map status codes to user-facing copy.
+Two helpers live in [`src/shared/api/http.ts`](src/shared/api/http.ts), both exported from `@/shared/api`:
+
+- **`backendFetch<T>(path, init?)`** — low-level wrapper:
+  - Base URL: `API_URL` from `@/shared/config` (reads `NEXT_PUBLIC_API_URL`, defaults to `http://localhost:3001` in dev; **required** in production).
+  - Sets `Content-Type: application/json` and `cache: 'no-store'` by default.
+  - Non-2xx → throws **`ApiError`** with `status` and a normalized `message` (joins `class-validator` array errors).
+  - Use directly **only** for unauthenticated endpoints (`/auth/login`, `/auth/register`).
+
+- **`fetchWithAuth<T>(path, init?)`** — the default for every authenticated call:
+  - Reads `accessToken` from cookies and attaches `Authorization: Bearer ${token}`.
+  - On `ApiError` with `status === 401` it tries `POST /auth/refresh` with the `refreshToken` cookie. On success — `setSession(newTokens)` and retries the original request once with the fresh access token.
+  - On refresh failure (no refresh cookie / non-OK response) — `clearSession()` + `redirect('/login')`.
+  - Other errors (non-401, or 401 after a successful retry) bubble up as `ApiError` for the Server Action to map.
+  - Example:
+    ```ts
+    return fetchWithAuth<User>('/users/me')
+    ```
+  - **Never** call `getAccessToken()` and pass `Authorization` manually for protected endpoints — that bypasses the refresh-flow.
+
+Catch `ApiError` in Server Actions to map status codes to user-facing copy.
 
 ## Forms — Canonical Pattern
 

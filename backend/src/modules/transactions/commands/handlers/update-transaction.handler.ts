@@ -6,6 +6,11 @@ import { UpdateTransactionCommand } from '../update-transaction.command'
 import { TransactionRepository } from '../../repositories/transaction.repository'
 import { GetCategoryByIdForUserQuery } from '../../../categories/queries/get-category-by-id-for-user.query'
 
+/**
+ * Handles {@link UpdateTransactionCommand}.
+ * Verifies transaction existence and (when a new category is supplied) category ownership
+ * before applying the partial update.
+ */
 @CommandHandler(UpdateTransactionCommand)
 export class UpdateTransactionHandler implements ICommandHandler<UpdateTransactionCommand, Transaction> {
   constructor(
@@ -13,6 +18,13 @@ export class UpdateTransactionHandler implements ICommandHandler<UpdateTransacti
     private readonly queryBus: QueryBus,
   ) {}
 
+  /**
+   * Executes the update-transaction command.
+   *
+   * @param command - Command carrying id, userId, and optional updated fields.
+   * @returns The updated Transaction entity.
+   * @throws {NotFoundException} If the transaction is not found, or if the new category does not belong to the user.
+   */
   async execute(command: UpdateTransactionCommand): Promise<Transaction> {
     const existing = await this.transactionRepo.findByIdForUser(command.id, command.userId)
     if (!existing) throw new NotFoundException()

@@ -7,12 +7,24 @@ import { TransactionRepository } from '../../repositories/transaction.repository
 import { ListTransactionsDto } from '../../dto/list-transactions.dto'
 import { TransactionDto } from '../../dto/transaction.dto'
 
+/**
+ * Handles {@link GetTransactionsByUserQuery}.
+ * Computes optional date-range bounds from month/year, runs three parallel DB queries
+ * (list, count, sum-by-type), and assembles a {@link ListTransactionsDto}.
+ */
 @QueryHandler(GetTransactionsByUserQuery)
 export class GetTransactionsByUserHandler
   implements IQueryHandler<GetTransactionsByUserQuery, ListTransactionsDto>
 {
   constructor(private readonly transactionRepo: TransactionRepository) {}
 
+  /**
+   * Executes the get-transactions-by-user query.
+   *
+   * @param query - Query carrying userId, optional month/year filter, page, and limit.
+   * @returns A {@link ListTransactionsDto} with transactions, summary (income/expense/balance), and pagination metadata.
+   * @throws {BadRequestException} If only one of `month` or `year` is provided (both are required together).
+   */
   async execute(query: GetTransactionsByUserQuery): Promise<ListTransactionsDto> {
     const { userId, month, year, page, limit } = query
     const hasMonth = month !== undefined

@@ -27,17 +27,36 @@ interface JwtUser {
   email: string
 }
 
+/**
+ * REST controller for the /transactions resource.
+ * All routes are protected by the JWT access token guard.
+ */
 @UseGuards(AuthGuard('jwt'))
 @Controller('transactions')
 export class TransactionsController {
   constructor(private readonly transactionsService: TransactionsService) {}
 
+  /**
+   * Returns a paginated list of transactions for the authenticated user.
+   *
+   * @param req - Express request; `req.user` is populated by the JWT guard.
+   * @param query - Optional filters: month (1–12), year (1970–2100), page, limit (1–100).
+   * @returns Paginated transaction list with aggregate income/expense summary.
+   */
   @Get()
   findAll(@Req() req: Request, @Query() query: ListTransactionsQueryDto): Promise<ListTransactionsDto> {
     const { userId } = req.user as JwtUser
     return this.transactionsService.findAll(userId, query.month, query.year, query.page ?? 1, query.limit ?? 10)
   }
 
+  /**
+   * Creates a new transaction for the authenticated user.
+   *
+   * @param req - Express request with JWT user payload.
+   * @param dto - Transaction payload: amount, type, date, categoryId, optional description.
+   * @returns The newly created transaction serialized as a DTO.
+   * @throws {NotFoundException} If the specified category does not belong to the user.
+   */
   @Post()
   async create(@Req() req: Request, @Body() dto: CreateTransactionDto): Promise<TransactionDto> {
     const { userId } = req.user as JwtUser
@@ -45,6 +64,14 @@ export class TransactionsController {
     return TransactionDto.fromEntity(transaction)
   }
 
+  /**
+   * Returns a single transaction by ID for the authenticated user.
+   *
+   * @param req - Express request with JWT user payload.
+   * @param id - Transaction UUID.
+   * @returns The transaction DTO.
+   * @throws {NotFoundException} If the transaction does not exist or belongs to another user.
+   */
   @Get(':id')
   async findOne(@Req() req: Request, @Param('id') id: string): Promise<TransactionDto> {
     const { userId } = req.user as JwtUser
@@ -53,6 +80,15 @@ export class TransactionsController {
     return TransactionDto.fromEntity(transaction)
   }
 
+  /**
+   * Partially updates a transaction owned by the authenticated user.
+   *
+   * @param req - Express request with JWT user payload.
+   * @param id - Transaction UUID.
+   * @param dto - Fields to update (all optional).
+   * @returns The updated transaction DTO.
+   * @throws {NotFoundException} If the transaction or the new category is not found.
+   */
   @Patch(':id')
   async update(
     @Req() req: Request,
@@ -64,6 +100,14 @@ export class TransactionsController {
     return TransactionDto.fromEntity(transaction)
   }
 
+  /**
+   * Deletes a transaction owned by the authenticated user.
+   *
+   * @param req - Express request with JWT user payload.
+   * @param id - Transaction UUID.
+   * @returns void — HTTP 204 No Content.
+   * @throws {NotFoundException} If the transaction does not exist or belongs to another user.
+   */
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Req() req: Request, @Param('id') id: string): Promise<void> {

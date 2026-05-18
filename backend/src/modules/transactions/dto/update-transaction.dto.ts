@@ -1,6 +1,7 @@
 import { IsString, IsEnum, IsOptional, IsDateString, IsUUID, Matches, MaxLength } from 'class-validator'
 import { TransactionType } from '@prisma/client'
 
+/** Input DTO for partially updating an existing transaction. All fields are optional. */
 export class UpdateTransactionDto {
   @IsOptional()
   @IsString()

@@ -43,16 +43,17 @@ Package-specific commands (Prisma, etc.) live in the subdirectory `CLAUDE.md` fi
 
 This project uses **GitHub Flow** — a lightweight branch-based workflow.
 
-- `main` is always deployable; every change lives in its own branch off `main`.
+- `master` is always deployable; every change lives in its own branch off `master`.
 - Branch names: `<type>/<short-description>` (e.g., `feat/add-categories-page`, `fix/auth-refresh-token`).
+- **Before creating a feature branch**: always switch to local `master` and pull the latest changes (`git checkout master && git pull`). Never branch off a stale local `master` — it leads to avoidable merge conflicts and re-reviewing already-merged code.
 - Before merging: run lint + typecheck (see [Commands](#commands)) and manually verify the feature works.
 - Merge with `git merge --no-ff` to preserve branch history, then delete the branch.
 
 ```bash
-git checkout main && git pull
+git checkout master && git pull   # mandatory: sync local master before branching
 git checkout -b feat/my-feature
 # ...work, commit incrementally...
-git checkout main
+git checkout master
 git merge --no-ff feat/my-feature
 git push
 git branch -d feat/my-feature

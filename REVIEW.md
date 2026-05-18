@@ -8,11 +8,12 @@
 
 ## 0. Перед началом ревью
 
-- Убедиться, что ветка названа по схеме `<type>/<short-description>` (`feat/`, `fix/`, `refactor/`, `chore/`, `docs/`, `test/`, `style/`, `perf/`).
+- Ветка ответвлена от **актуального** `master` (`git checkout master && git pull` перед `git checkout -b ...`). Если в PR видны merge-конфликты с уже смерджёнными коммитами или «возвращены» удалённые файлы — это `[blocker]`, перебазировать на свежий `master`.
+- Ветка названа по схеме `<type>/<short-description>` (`feat/`, `fix/`, `refactor/`, `chore/`, `docs/`, `test/`, `style/`, `perf/`).
 - Все коммиты — в формате Conventional Commits (`<type>(<scope>): <description>`, императив, lowercase, без точки в конце).
 - Локально прогнаны: `pnpm --filter frontend lint`, `pnpm --filter backend lint`, `pnpm typecheck`.
 - Фича вручную проверена в браузере (для UI-изменений) — об этом должно быть сказано в описании PR.
-- Нет коммитов в `main` напрямую; PR мерджится `--no-ff`.
+- Нет коммитов в `master` напрямую; PR мерджится `--no-ff`, ветка после мерджа удаляется.
 
 ---
 
@@ -104,9 +105,16 @@
 - На успехе — `setSession` / `revalidate*` / `redirect`. Никаких client-side fetch и ручных переходов через `router.push` после мутации.
 
 ### HTTP / Backend-вызовы
-- Все запросы — через `backendFetch<T>` из `@/shared/api`. Никаких голых `fetch(API_URL + ...)`.
-- Защищённые запросы передают `Authorization: Bearer ${token}` явно, токен получают через `getAccessToken()` (только из RSC/Server Action).
-- Ошибки backend ловятся как `ApiError` (есть `status`, нормализованный `message`).
+- Никаких голых `fetch(API_URL + ...)` в фичах/вью/виджетах — только хелперы из `@/shared/api`.
+- **Защищённые эндпоинты — только `fetchWithAuth<T>`**. Запрещено для защищённых вызовов:
+  - использовать `backendFetch` + ручной `Authorization: Bearer ${token}`,
+  - дергать `getAccessToken()` / `getRefreshToken()` из фичей (это обходит refresh-flow в `fetchWithAuth`).
+  - Любой такой паттерн — `[blocker]`, заменить на `fetchWithAuth(path, init)`.
+- **`backendFetch` напрямую — только для публичных эндпоинтов** (`/auth/login`, `/auth/register`). Для них refresh не нужен и невозможен.
+- Refresh-flow живёт в одном месте — `shared/api/http.ts::fetchWithAuth`. Не дублировать логику `POST /auth/refresh` в Server Actions/фичах. Любая модификация `/auth/refresh`-контракта на бэке = парный PR с правкой `fetchWithAuth` (новый shape `TokenPair`, изменение эндпоинта, переход на cookie-based refresh и т.п.).
+- На успехе refresh-вызов делает `setSession(newTokens)` — Server Action, **может вызываться только из серверного контекста**. Поэтому `fetchWithAuth` нельзя импортировать в `'use client'` файлы (`[blocker]`).
+- На провале refresh `fetchWithAuth` сам делает `clearSession()` + `redirect('/login')`. Не оборачивать его в `try/catch` ради «своего» redirect/тост-а — это сломает поток (`redirect` бросает специальный error, который нельзя глотать).
+- Ошибки backend ловятся как `ApiError` (`status` + нормализованный `message`). Маппинг `status → user copy` — только в Server Action, не в UI.
 - `process.env.NEXT_PUBLIC_*` читается **только** в `@/shared/config`. В фичах/вью/виджетах — никаких `process.env`.
 
 ### UI / shadcn
