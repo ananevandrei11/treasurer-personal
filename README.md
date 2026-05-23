@@ -35,6 +35,14 @@ This starts PostgreSQL 17 on port `5432` with:
 - password: `treasurer`
 - database: `treasurer_db`
 
+To stop the database:
+
+```bash
+docker compose stop        # stop containers, keep data
+docker compose down        # stop and remove containers (data preserved in volume)
+docker compose down -v     # stop, remove containers AND wipe all data
+```
+
 ### 2. Environment variables
 
 ```bash
