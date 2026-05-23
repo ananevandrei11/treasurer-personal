@@ -19,12 +19,14 @@ Creates a GitHub Pull Request following the project's GitHub Flow.
 
 If either argument is missing, ask the user to provide it before proceeding.
 
+## Status
+!`git status`
+
 ## Workflow
 
 ### 1. Validate state
 
 ```bash
-git status
 git log --oneline master..$1
 ```
 
