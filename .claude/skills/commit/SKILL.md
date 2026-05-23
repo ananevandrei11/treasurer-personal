@@ -50,14 +50,16 @@ docs: expand README with quick-start guide
 
 **Never** run `git commit` (or any git operation) autonomously. Prepare the message and show it to the user; wait for explicit confirmation before executing.
 
-## Workflow
+## Status
+1. see what changed - !`git status`
+2. last commits - !`git log --oneline -10`
 
-1. `git status` — see what changed
-2. `git diff` — read the content to form an accurate message
-3. Determine type and scope
-4. Stage only relevant files explicitly — never `git add .` or `git add -A`
-5. Draft a commit message and show it to the user for confirmation
-6. On approval, commit via heredoc:
+## Workflow
+1. `git diff` — read the content to form an accurate message
+2. Determine type and scope
+3. Stage only relevant files explicitly — never `git add .` or `git add -A`
+4. Draft a commit message and show it to the user for confirmation
+5. On approval, commit via heredoc:
 
 ```bash
 git commit -m "$(cat <<'EOF'
