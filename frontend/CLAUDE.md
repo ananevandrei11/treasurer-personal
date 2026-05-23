@@ -100,12 +100,16 @@ src/
 
 ## Authentication
 
-- Tokens are stored as **httpOnly cookies** via Server Actions in [`src/shared/lib/session.ts`](src/shared/lib/session.ts):
+- Tokens are stored as **httpOnly cookies**:
   - `accessToken` — 15 min, `httpOnly`, `sameSite: 'strict'`, `secure` in production
   - `refreshToken` — 7 days, same flags
-- `setSession({ accessToken, refreshToken })` after a successful auth response; `clearSession()` on logout.
-- `getAccessToken()` / `getRefreshToken()` read cookies — call them from RSCs and Server Actions, never from `'use client'`. In feature/view/widget code prefer `fetchWithAuth` so you don't have to touch tokens at all.
-- Route protection: `app/(app)/layout.tsx` calls `fetchWithAuth<User>('/users/me')`; on failure `fetchWithAuth` itself `redirect('/login')`s. There is no middleware-based protection — the layout is the gate.
+- `setSession({ accessToken, refreshToken })` (in [`src/shared/lib/session.ts`](src/shared/lib/session.ts)) is called after a successful login/register Server Action. Cookie cleanup on logout is delegated to the route handler at [`src/app/api/auth/logout/route.ts`](src/app/api/auth/logout/route.ts).
+- `getAccessToken()` reads the cookie — call it from RSCs and Server Actions, never from `'use client'`. In feature/view/widget code prefer `fetchWithAuth` so you don't have to touch tokens at all.
+- **Refresh flow lives in [`src/proxy.ts`](src/proxy.ts)** (Next.js 16 renamed `middleware.ts` to `proxy.ts`). On every protected request the proxy decodes the access JWT `exp`, and if missing/expired calls `POST /auth/refresh` with the refresh cookie, rotates both tokens, and writes them to `response.cookies` and `request.cookies` (so downstream RSCs immediately see the new tokens via `cookies()`). On refresh failure it redirects to `/login` and clears both cookies.
+  - Why proxy and not in-RSC retry: `cookies().set/delete` is forbidden in RSC; only proxy, route handlers and Server Actions can mutate cookies.
+  - `proxy.ts` matcher excludes `_next`, `/api`, `favicon.ico`, and any path with a file extension. `/login` and `/register` are short-circuited at the top of the proxy.
+- Route protection: the proxy guarantees a fresh access token before any `(app)/*` page renders. `app/(app)/layout.tsx` just calls `fetchWithAuth<User>('/users/me')` for header data — no manual `getAccessToken` pre-check is needed.
+- 401 fallback: if the backend invalidates the access token between proxy and the call, `fetchWithAuth` catches the `ApiError` and `redirect('/api/auth/logout')`. The route handler clears cookies and redirects to `/login`. Same endpoint is reused by `logoutAction`.
 
 ## HTTP Client
 
@@ -119,14 +123,14 @@ Two helpers live in [`src/shared/api/http.ts`](src/shared/api/http.ts), both exp
 
 - **`fetchWithAuth<T>(path, init?)`** — the default for every authenticated call:
   - Reads `accessToken` from cookies and attaches `Authorization: Bearer ${token}`.
-  - On `ApiError` with `status === 401` it tries `POST /auth/refresh` with the `refreshToken` cookie. On success — `setSession(newTokens)` and retries the original request once with the fresh access token.
-  - On refresh failure (no refresh cookie / non-OK response) — `clearSession()` + `redirect('/login')`.
-  - Other errors (non-401, or 401 after a successful retry) bubble up as `ApiError` for the Server Action to map.
+  - Refresh is **not** done here — `proxy.ts` rotates tokens before the request reaches RSC/Server Action code, so the cookie is already fresh.
+  - On `ApiError` with `status === 401` (rare: backend invalidated the token after proxy passed) it `redirect('/api/auth/logout')` — the route handler clears cookies and bounces to `/login`. This works from both RSC and Server Action contexts where `cookies().delete` is not allowed/legal.
+  - Other errors bubble up as `ApiError` for the Server Action to map.
   - Example:
     ```ts
     return fetchWithAuth<User>('/users/me')
     ```
-  - **Never** call `getAccessToken()` and pass `Authorization` manually for protected endpoints — that bypasses the refresh-flow.
+  - **Never** call `getAccessToken()` and pass `Authorization` manually for protected endpoints — that bypasses the 401 fallback.
 
 Catch `ApiError` in Server Actions to map status codes to user-facing copy.
 

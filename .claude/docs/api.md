@@ -4,7 +4,7 @@ Base URL: `http://localhost:3001/api`
 Swagger UI: `http://localhost:3001/api/docs`
 
 All protected routes require `Authorization: Bearer <accessToken>` header.  
-Tokens are rotated automatically by `fetchWithAuth` on the frontend.
+Tokens are rotated automatically by the frontend `proxy.ts` before each request (decodes access JWT `exp`, calls `/auth/refresh` when needed, updates cookies on the response).
 
 ---
 

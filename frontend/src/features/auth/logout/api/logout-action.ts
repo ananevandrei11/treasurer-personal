@@ -2,7 +2,7 @@
 
 import { redirect } from 'next/navigation'
 import { backendFetch } from '@/shared/api'
-import { clearSession, getAccessToken } from '@/shared/lib'
+import { getAccessToken } from '@/shared/lib'
 
 export async function logoutAction() {
   const token = await getAccessToken()
@@ -16,6 +16,5 @@ export async function logoutAction() {
       // best-effort logout on backend
     }
   }
-  await clearSession()
-  redirect('/login')
+  redirect('/api/auth/logout')
 }
