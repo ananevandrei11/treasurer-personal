@@ -6,6 +6,8 @@ effort: low
 allowedTools:
   - Bash(git *)
   - Bash(grep *)
+  - Bash(read *)
+  - Bash(glob *)
 ---
 
 # Commit — Treasurer
