@@ -91,3 +91,7 @@ The app UI is **English-only**. All product-facing strings — button labels, va
 ## Implementation Status
 
 The project is in early scaffold stage. Most service methods (auth, users, accounts, categories, transactions) throw `Error('Not implemented')`. Prisma models have not yet been added to the schema.
+
+## Update docs
+When adding functionality, check .claude/docs/*.
+Update files when architecture or API changes or database changes. also update the dev-guide if there are global changes.
