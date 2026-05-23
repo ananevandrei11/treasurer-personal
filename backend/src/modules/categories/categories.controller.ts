@@ -66,7 +66,7 @@ export class CategoriesController {
   @Post()
   async create(@Req() req: Request, @Body() dto: CreateCategoryDto): Promise<CategoryDto> {
     const { userId } = req.user as JwtUser
-    const category = await this.categoriesService.create(userId, dto.name, dto.color, dto.icon)
+    const category = await this.categoriesService.create(userId, dto.name, dto.color)
     return CategoryDto.fromEntity(category)
   }
 
@@ -113,7 +113,7 @@ export class CategoriesController {
     @Body() dto: UpdateCategoryDto,
   ): Promise<CategoryDto> {
     const { userId } = req.user as JwtUser
-    const category = await this.categoriesService.update(id, userId, dto.name, dto.color, dto.icon)
+    const category = await this.categoriesService.update(id, userId, dto.name, dto.color)
     return CategoryDto.fromEntity(category)
   }
 

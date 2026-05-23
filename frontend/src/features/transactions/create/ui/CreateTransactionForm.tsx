@@ -82,7 +82,7 @@ export function CreateTransactionForm({ categories, onSuccess }: Props) {
             <option value="">Select category</option>
             {categories.map((c) => (
               <option key={c.id} value={c.id}>
-                {c.icon} {c.name}
+                {c.name}
               </option>
             ))}
           </select>

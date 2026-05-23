@@ -31,7 +31,6 @@ export class CreateCategoryHandler implements ICommandHandler<CreateCategoryComm
     return this.categoryRepo.create({
       name: command.name,
       color: command.color,
-      icon: command.icon,
       userId: command.userId,
     })
   }

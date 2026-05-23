@@ -15,6 +15,5 @@ export class UpdateCategoryCommand {
     public readonly userId: string,
     public readonly name?: string,
     public readonly color?: string,
-    public readonly icon?: string,
   ) {}
 }

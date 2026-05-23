@@ -44,7 +44,6 @@ model Category {
   id           String        @id @default(uuid())
   name         String
   color        String
-  icon         String
   userId       String
   user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   transactions Transaction[]
@@ -60,7 +59,6 @@ model Category {
 | `id`       | uuid     | PK                                                  |
 | `name`     | string   | 1–50 chars                                          |
 | `color`    | string   | hex color, e.g. `#FF5733`                           |
-| `icon`     | string   | lucide icon name, e.g. `utensils`                   |
 | `userId`   | string   | FK → `User.id`, cascade delete                      |
 | `createdAt`| DateTime |                                                     |
 | `updatedAt`| DateTime |                                                     |

@@ -1,5 +1,6 @@
 import { Suspense } from 'react'
-import { TransactionsList, getCategories } from '@/features/transactions/list'
+import { TransactionsList } from '@/features/transactions/list'
+import { getCategories } from '@/features/categories/list'
 import { AddTransactionTrigger } from '@/features/transactions/create'
 
 type Props = { page: number }

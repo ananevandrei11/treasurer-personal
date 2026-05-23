@@ -2,6 +2,17 @@
 
 NestJS 11 backend for Treasurer. See the root [`CLAUDE.md`](../CLAUDE.md) for project-wide rules (git workflow, commits, language).
 
+## MANDATORY RULES — read before every change
+
+1. **Changed `schema.prisma` → create a migration immediately.**
+   Any added, removed, or modified field/model requires `pnpm --filter backend prisma:migrate` (or `--create-only` + `migrate resolve --applied` if the DB is already ahead). No migration = PR is not done.
+
+2. **Changed API or schema → update `.claude/docs/`.**
+   After any endpoint, DTO, or Prisma model change, update `.claude/docs/api.md` and/or `.claude/docs/database.md`. These docs are the source of truth for the frontend.
+
+3. **Before implementing → read `.claude/docs/api.md` and `.claude/docs/database.md`.**
+   Do not implement from memory. Read the current contracts first, then write code.
+
 ## Stack
 
 - **NestJS 11** with **CQRS** (`@nestjs/cqrs`) for command/query separation
@@ -88,7 +99,7 @@ Schema: [`prisma/schema.prisma`](prisma/schema.prisma). Provider: `postgresql`.
 Models:
 
 - **User** — `id (uuid)`, `email (unique)`, `name`, `passwordHash`, `refreshTokenHash?`, timestamps
-- **Category** — `id`, `name`, `color`, `icon`, `userId` (FK → User, cascade), timestamps, `@@index([userId])`
+- **Category** — `id`, `name`, `color`, `userId` (FK → User, cascade), timestamps, `@@index([userId])`
 - **Transaction** — `id`, `amount (Decimal(12,2))`, `type (INCOME | EXPENSE)`, `description?`, `date`, `categoryId` (FK → Category, restrict), `userId` (FK → User, cascade), timestamps, indexes `[userId, date]` and `[categoryId]`
 
 Notes:

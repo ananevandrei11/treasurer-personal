@@ -48,8 +48,8 @@ export class CategoriesService {
    * @param icon - Icon identifier string.
    * @returns The created Prisma Category entity.
    */
-  create(userId: string, name: string, color: string, icon: string): Promise<Category> {
-    return this.commandBus.execute(new CreateCategoryCommand(userId, name, color, icon))
+  create(userId: string, name: string, color: string): Promise<Category> {
+    return this.commandBus.execute(new CreateCategoryCommand(userId, name, color))
   }
 
   /**
@@ -67,9 +67,8 @@ export class CategoriesService {
     userId: string,
     name?: string,
     color?: string,
-    icon?: string,
   ): Promise<Category> {
-    return this.commandBus.execute(new UpdateCategoryCommand(id, userId, name, color, icon))
+    return this.commandBus.execute(new UpdateCategoryCommand(id, userId, name, color))
   }
 
   /**

@@ -190,7 +190,7 @@ All routes require JWT. All results are scoped to the authenticated user.
 **Response 200**
 ```json
 [
-  { "id": "uuid", "name": "Food", "color": "#FF5733", "icon": "utensils", "createdAt": "...", "updatedAt": "..." }
+  { "id": "uuid", "name": "Food", "color": "#FF5733", "createdAt": "...", "updatedAt": "..." }
 ]
 ```
 
@@ -200,14 +200,13 @@ All routes require JWT. All results are scoped to the authenticated user.
 
 **Body**
 ```json
-{ "name": "Food", "color": "#FF5733", "icon": "utensils" }
+{ "name": "Food", "color": "#FF5733" }
 ```
 
 | Field   | Type   | Rules                            |
 |---------|--------|----------------------------------|
 | `name`  | string | 1–50 chars                       |
 | `color` | string | hex color, pattern `#[0-9A-Fa-f]{6}` |
-| `icon`  | string | 1–50 chars (lucide icon name)    |
 
 **Response 201** — `CategoryDto`
 

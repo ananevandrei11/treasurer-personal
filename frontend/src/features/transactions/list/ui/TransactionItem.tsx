@@ -21,7 +21,10 @@ export function TransactionItem({ transaction, category }: Props) {
         className="flex size-9 shrink-0 items-center justify-center rounded-full text-sm"
         style={{ backgroundColor: category ? `${category.color}20` : undefined }}
       >
-        {category?.icon ?? '💳'}
+        <span
+          className="size-3 rounded-full"
+          style={{ backgroundColor: category?.color }}
+        />
       </div>
 
       <div className="min-w-0 flex-1">

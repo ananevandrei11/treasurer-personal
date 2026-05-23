@@ -9,6 +9,40 @@ You are working on the **Treasurer** personal expense tracker. The frontend live
 
 For pure FSD methodology questions (what layer for what code, cross-imports, `@x` pattern, etc.), defer to the `feature-sliced-design` skill. This skill complements it with project-specific templates and conventions.
 
+## Before you start (mandatory — do all before writing any code)
+
+### 1. Git branch
+This project uses **GitHub Flow**: every change lives in its own branch off `master`.
+
+check current branch - !`git branch --show-current`
+sync first - !`git pull`
+```bash
+git checkout -b feat/<short-description>   # branch name: <type>/<short-description>
+```
+
+Do **not** commit directly to `master`. If the user hasn't named a branch, derive one from the task (e.g. `feat/add-categories-page`). Ask the user to confirm the branch name only if the scope is ambiguous.
+
+### 2. Read current API and schema
+Before touching any file that communicates with the backend, read:
+- `.claude/docs/api.md` — current request/response shapes for all endpoints
+- `.claude/docs/database.md` — current Prisma models and field names
+
+This prevents implementing against a stale schema. These docs are the source of truth for what the backend accepts and returns.
+
+### 3. Load relevant Next.js reference
+Check which scenario matches the task and read the file from `.claude/skills/next-best-practices/`:
+
+| Scenario | File |
+|---|---|
+| `'use client'` / `'use server'` / Server Action form | `directives.md`, `rsc-boundaries.md` |
+| React 19 form reset, controlled vs uncontrolled inputs | `rsc-boundaries.md`, `data-patterns.md` |
+| `cookies()`, `headers()`, async `params`/`searchParams` | `async-patterns.md` |
+| New route, layout, error boundary, not-found | `file-conventions.md`, `error-handling.md` |
+| Data fetching, waterfall, `Promise.all`, Suspense | `data-patterns.md`, `suspense-boundaries.md` |
+| `useSearchParams` / `usePathname` without Suspense | `suspense-boundaries.md` |
+| Modal with intercepting routes | `parallel-routes.md` |
+| Hydration mismatch | `hydration-error.md` |
+
 ## Stack — exact versions and what they mean
 
 - **Next.js 16** (App Router only; no Pages Router). `next lint` was removed — use `pnpm --filter frontend lint` which runs `eslint src`.
@@ -96,6 +130,7 @@ Run through this list and fix anything you missed:
 - [ ] All UI strings, metadata titles, validation messages, and error copy are in English (`lang="en"`).
 - [ ] No `next lint` invocations — only `pnpm --filter frontend lint`.
 - [ ] After changes: `pnpm --filter frontend lint` and `pnpm typecheck` are clean.
+- [ ] If any API endpoint shape or Prisma model changed: updated `.claude/docs/api.md` and/or `.claude/docs/database.md`.
 
 ## When the user asks something this skill doesn't cover
 

@@ -16,10 +16,5 @@ export class UpdateCategoryDto {
   @Matches(/^#[0-9A-Fa-f]{6}$/)
   color?: string
 
-  @ApiPropertyOptional({ example: 'utensils', minLength: 1, maxLength: 50 })
-  @IsOptional()
-  @IsString()
-  @MinLength(1)
-  @MaxLength(50)
-  icon?: string
+
 }

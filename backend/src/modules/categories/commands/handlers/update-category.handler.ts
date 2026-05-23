@@ -26,7 +26,6 @@ export class UpdateCategoryHandler implements ICommandHandler<UpdateCategoryComm
     return this.categoryRepo.update(command.id, command.userId, {
       name: command.name,
       color: command.color,
-      icon: command.icon,
     })
   }
 }
