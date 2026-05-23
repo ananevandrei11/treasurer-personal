@@ -133,3 +133,8 @@ pnpm --filter backend typecheck        # tsc --noEmit
 - **No direct Prisma imports outside repositories.** Services and handlers depend on repositories.
 - **`import type`** for type-only imports — but **never** for NestJS DI providers or `@Body()` DTO parameters (kills reflection metadata).
 - **Errors**: throw Nest built-ins (`NotFoundException`, `UnauthorizedException`, `ForbiddenException`, `BadRequestException`); the global filter maps them to HTTP responses.
+
+## Documentation
+
+- When changing service or handler methods — update JSDoc accordingly.
+- For DTOs and controllers — add or update Swagger decorators (`@ApiProperty`, `@ApiOperation`, `@ApiResponse`, etc.).

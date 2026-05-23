@@ -19,6 +19,10 @@ interface JwtPayload {
   email: string
 }
 
+/**
+ * Application service for Authentication.
+ * Handles registration, login, token refresh, and logout.
+ */
 @Injectable()
 export class AuthService {
   constructor(
@@ -28,6 +32,13 @@ export class AuthService {
     private readonly config: ConfigService,
   ) {}
 
+  /**
+   * Registers a new user and issues tokens.
+   *
+   * @param dto - Validated registration data.
+   * @returns AuthResponse containing the new user and tokens.
+   * @throws {ConflictException} If the email is already registered.
+   */
   async register(dto: RegisterDto): Promise<AuthResponseDto> {
     const existing = await this.queryBus.execute<GetUserByEmailQuery, User | null>(
       new GetUserByEmailQuery(dto.email),
@@ -44,6 +55,13 @@ export class AuthService {
     return { user: UserDto.fromEntity(user), ...tokens }
   }
 
+  /**
+   * Validates user credentials and issues tokens.
+   *
+   * @param dto - Validated login data.
+   * @returns AuthResponse containing the user and tokens.
+   * @throws {UnauthorizedException} If credentials are invalid.
+   */
   async login(dto: LoginDto): Promise<AuthResponseDto> {
     const user = await this.queryBus.execute<GetUserByEmailQuery, User | null>(
       new GetUserByEmailQuery(dto.email),
@@ -59,6 +77,14 @@ export class AuthService {
     return { user: UserDto.fromEntity(user), ...tokens }
   }
 
+  /**
+   * Refreshes access and refresh tokens.
+   *
+   * @param userId - User UUID.
+   * @param refreshToken - Raw refresh token to validate.
+   * @returns New TokenPair.
+   * @throws {UnauthorizedException} If the refresh token is invalid or user not found.
+   */
   async refresh(userId: string, refreshToken: string): Promise<TokenPairDto> {
     const user = await this.queryBus.execute<GetUserByIdQuery, User | null>(
       new GetUserByIdQuery(userId),
@@ -68,7 +94,10 @@ export class AuthService {
     const incomingHash = createHash('sha256').update(refreshToken).digest('hex')
     const incomingBuf = Buffer.from(incomingHash, 'utf8')
     const storedBuf = Buffer.from(user.refreshTokenHash, 'utf8')
-    if (incomingBuf.length !== storedBuf.length || !timingSafeEqual(new Uint8Array(incomingBuf), new Uint8Array(storedBuf))) {
+    if (
+      incomingBuf.length !== storedBuf.length ||
+      !timingSafeEqual(new Uint8Array(incomingBuf), new Uint8Array(storedBuf))
+    ) {
       throw new UnauthorizedException('Access denied')
     }
 
@@ -78,10 +107,21 @@ export class AuthService {
     return tokens
   }
 
+  /**
+   * Revokes the user's refresh token.
+   *
+   * @param userId - User UUID.
+   */
   async logout(userId: string): Promise<void> {
     await this.commandBus.execute(new UpdateRefreshTokenHashCommand(userId, null))
   }
 
+  /**
+   * Signs a new pair of access and refresh tokens.
+   *
+   * @param user - User entity to sign tokens for.
+   * @returns TokenPair.
+   */
   private async issueTokens(user: User): Promise<TokenPairDto> {
     const payload: JwtPayload = { sub: user.id, email: user.email }
 

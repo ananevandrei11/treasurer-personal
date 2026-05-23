@@ -14,6 +14,7 @@ import {
   HttpStatus,
 } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
+import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger'
 import type { Request } from 'express'
 import { TransactionsService } from './transactions.service'
 import { CreateTransactionDto } from './dto/create-transaction.dto'
@@ -31,6 +32,8 @@ interface JwtUser {
  * REST controller for the /transactions resource.
  * All routes are protected by the JWT access token guard.
  */
+@ApiTags('transactions')
+@ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'))
 @Controller('transactions')
 export class TransactionsController {
@@ -43,6 +46,9 @@ export class TransactionsController {
    * @param query - Optional filters: month (1–12), year (1970–2100), page, limit (1–100).
    * @returns Paginated transaction list with aggregate income/expense summary.
    */
+  @ApiOperation({ summary: 'List transactions', description: 'Returns a paginated list of transactions for the authenticated user, optionally filtered by month and year.' })
+  @ApiResponse({ status: 200, description: 'Paginated transaction list with income/expense summary.', type: ListTransactionsDto })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @Get()
   findAll(@Req() req: Request, @Query() query: ListTransactionsQueryDto): Promise<ListTransactionsDto> {
     const { userId } = req.user as JwtUser
@@ -57,6 +63,11 @@ export class TransactionsController {
    * @returns The newly created transaction serialized as a DTO.
    * @throws {NotFoundException} If the specified category does not belong to the user.
    */
+  @ApiOperation({ summary: 'Create transaction' })
+  @ApiResponse({ status: 201, description: 'Transaction created successfully.', type: TransactionDto })
+  @ApiResponse({ status: 400, description: 'Validation error.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @ApiResponse({ status: 404, description: 'Category not found.' })
   @Post()
   async create(@Req() req: Request, @Body() dto: CreateTransactionDto): Promise<TransactionDto> {
     const { userId } = req.user as JwtUser
@@ -72,6 +83,11 @@ export class TransactionsController {
    * @returns The transaction DTO.
    * @throws {NotFoundException} If the transaction does not exist or belongs to another user.
    */
+  @ApiOperation({ summary: 'Get transaction by ID' })
+  @ApiParam({ name: 'id', description: 'Transaction UUID' })
+  @ApiResponse({ status: 200, description: 'Transaction found.', type: TransactionDto })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @ApiResponse({ status: 404, description: 'Transaction not found.' })
   @Get(':id')
   async findOne(@Req() req: Request, @Param('id') id: string): Promise<TransactionDto> {
     const { userId } = req.user as JwtUser
@@ -89,6 +105,12 @@ export class TransactionsController {
    * @returns The updated transaction DTO.
    * @throws {NotFoundException} If the transaction or the new category is not found.
    */
+  @ApiOperation({ summary: 'Update transaction' })
+  @ApiParam({ name: 'id', description: 'Transaction UUID' })
+  @ApiResponse({ status: 200, description: 'Transaction updated.', type: TransactionDto })
+  @ApiResponse({ status: 400, description: 'Validation error.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @ApiResponse({ status: 404, description: 'Transaction or category not found.' })
   @Patch(':id')
   async update(
     @Req() req: Request,
@@ -108,6 +130,11 @@ export class TransactionsController {
    * @returns void — HTTP 204 No Content.
    * @throws {NotFoundException} If the transaction does not exist or belongs to another user.
    */
+  @ApiOperation({ summary: 'Delete transaction' })
+  @ApiParam({ name: 'id', description: 'Transaction UUID' })
+  @ApiResponse({ status: 204, description: 'Transaction deleted.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @ApiResponse({ status: 404, description: 'Transaction not found.' })
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Req() req: Request, @Param('id') id: string): Promise<void> {
