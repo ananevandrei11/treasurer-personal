@@ -1,5 +1,5 @@
 import { getTransactions } from '../api/get-transactions'
-import { getCategories } from '../api/get-categories'
+import { getCategories } from '@/features/categories/list'
 import { TransactionItem } from './TransactionItem'
 import { TransactionsPagination } from './TransactionsPagination'
 import type { Category } from '@/shared/api'

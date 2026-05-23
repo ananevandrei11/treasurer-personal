@@ -13,9 +13,6 @@ export class CategoryDto {
   @ApiProperty({ example: '#FF5733' })
   color!: string
 
-  @ApiProperty({ example: 'utensils' })
-  icon!: string
-
   @ApiProperty()
   createdAt!: Date
 
@@ -32,7 +29,6 @@ export class CategoryDto {
     id: string
     name: string
     color: string
-    icon: string
     createdAt: Date
     updatedAt: Date
   }): CategoryDto {
@@ -40,7 +36,6 @@ export class CategoryDto {
     dto.id = category.id
     dto.name = category.name
     dto.color = category.color
-    dto.icon = category.icon
     dto.createdAt = category.createdAt
     dto.updatedAt = category.updatedAt
     return dto

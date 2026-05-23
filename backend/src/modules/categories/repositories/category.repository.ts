@@ -16,7 +16,7 @@ export class CategoryRepository {
    * @param data - Category fields: name, color, icon, userId.
    * @returns The created Prisma Category entity.
    */
-  create(data: { name: string; color: string; icon: string; userId: string }): Promise<Category> {
+  create(data: { name: string; color: string; userId: string }): Promise<Category> {
     return this.prisma.category.create({ data })
   }
 
@@ -52,7 +52,7 @@ export class CategoryRepository {
   update(
     id: string,
     userId: string,
-    data: { name?: string; color?: string; icon?: string },
+    data: { name?: string; color?: string },
   ): Promise<Category> {
     return this.prisma.category.update({ where: { id, userId }, data })
   }

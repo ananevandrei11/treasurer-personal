@@ -4,6 +4,17 @@ Next.js 16 frontend for Treasurer. See the root [`CLAUDE.md`](../CLAUDE.md) for 
 
 > When working in `frontend/src/`, also consult the `frontend-engineer` skill — it has the canonical templates and import paths.
 
+## MANDATORY RULES — read before every change
+
+1. **Before touching any file that calls the backend → read `.claude/docs/api.md` and `.claude/docs/database.md`.**
+   Do not implement against memory or assumptions. Read the current request/response shapes first, then write code.
+
+2. **After a Server Action mutates data → revalidate ALL affected routes.**
+   `revalidatePath('/foo')` only invalidates `/foo`. If the mutation affects other pages (e.g. creating a category also affects the dashboard), add `revalidatePath` for every route that shows that data.
+
+3. **Changed a shared API type or fetch shape → update `.claude/docs/api.md`.**
+   If you change `shared/api/*.ts` types or fetch paths, update the docs so the backend stays in sync.
+
 ## Stack
 
 - **Next.js 16** with App Router + React 19 (Server Components by default)

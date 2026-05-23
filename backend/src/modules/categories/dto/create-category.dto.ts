@@ -13,10 +13,4 @@ export class CreateCategoryDto {
   @IsString()
   @Matches(/^#[0-9A-Fa-f]{6}$/)
   color!: string
-
-  @ApiProperty({ example: 'utensils', minLength: 1, maxLength: 50 })
-  @IsString()
-  @MinLength(1)
-  @MaxLength(50)
-  icon!: string
 }
