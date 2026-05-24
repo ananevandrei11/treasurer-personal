@@ -59,13 +59,10 @@ git push
 git branch -d feat/my-feature
 ```
 
-<important if="Нужно написать коммит / commit">
 ## Commit Convention
 
 Use the `/commit` skill — it encodes all rules, scopes, and constraints for this project.
 See [`.claude/skills/commit/SKILL.md`](.claude/skills/commit/SKILL.md) for the full specification.
-
-</important>
 
 ## Language
 
