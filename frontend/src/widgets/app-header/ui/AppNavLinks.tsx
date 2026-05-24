@@ -18,10 +18,10 @@ export function AppNavLinks() {
           key={href}
           href={href}
           className={cn(
-            'px-3 py-1.5 rounded-md text-sm font-medium transition-colors',
+            'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors',
             pathname === href
-              ? 'bg-accent text-accent-foreground'
-              : 'text-muted-foreground hover:text-foreground hover:bg-muted',
+              ? 'bg-sidebar-accent text-sidebar-accent-foreground'
+              : 'text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent',
           )}
         >
           {label}

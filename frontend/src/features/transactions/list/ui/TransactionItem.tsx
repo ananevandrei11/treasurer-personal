@@ -15,23 +15,30 @@ export function TransactionItem({ transaction, category }: Props) {
     year: 'numeric',
   })
 
+  const formattedAmount = new Intl.NumberFormat('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(Number(transaction.amount))
+
   return (
-    <div className="flex items-center gap-3 py-3 px-4 hover:bg-muted/50 transition-colors rounded-lg">
+    <div className="flex items-center gap-4 rounded-2xl bg-card px-5 py-4 hover:shadow-sm transition-shadow">
       <div
-        className="flex size-9 shrink-0 items-center justify-center rounded-full text-sm"
-        style={{ backgroundColor: category ? `${category.color}20` : undefined }}
+        className="flex size-10 shrink-0 items-center justify-center rounded-full"
+        style={{
+          backgroundColor: category ? `${category.color}22` : 'var(--color-muted)',
+        }}
       >
         <span
           className="size-3 rounded-full"
-          style={{ backgroundColor: category?.color }}
+          style={{ backgroundColor: category?.color ?? 'var(--color-muted-foreground)' }}
         />
       </div>
 
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-medium text-foreground">
+        <p className="truncate text-sm font-semibold text-foreground">
           {transaction.description ?? category?.name ?? '—'}
         </p>
-        <p className="text-xs text-muted-foreground">
+        <p className="mt-0.5 text-xs text-muted-foreground">
           {date}
           {category && ` · ${category.name}`}
         </p>
@@ -39,14 +46,11 @@ export function TransactionItem({ transaction, category }: Props) {
 
       <span
         className={cn(
-          'shrink-0 text-sm font-semibold tabular-nums',
-          isIncome ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400',
+          'shrink-0 text-sm font-bold tabular-nums',
+          isIncome ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-500 dark:text-rose-400',
         )}
       >
-        {isIncome ? '+' : '−'}
-      {new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(
-        Number(transaction.amount),
-      )}
+        {isIncome ? '+' : '−'}{formattedAmount}
       </span>
     </div>
   )
