@@ -35,6 +35,7 @@ frontend/*.tsbuildinfo
 
 # Claude Code project-local memory
 .claude/memory/
+.claude/settings.local.json
 
 # Skills (managed via `npx skills add`)
 .agents/
