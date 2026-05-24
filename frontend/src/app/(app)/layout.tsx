@@ -12,7 +12,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       <AppSidebar email={user.email} />
       <SidebarInset>
         <AppMobileTopBar />
-        <div className="flex-1 overflow-y-auto pb-20 md:pb-0">{children}</div>
+        <div className="flex-1 pb-[60px] md:pb-0">{children}</div>
       </SidebarInset>
       <MobileTabBar />
     </SidebarProvider>
