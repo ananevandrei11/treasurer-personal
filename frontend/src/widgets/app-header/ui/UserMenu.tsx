@@ -1,13 +1,20 @@
+'use client'
+
 import Link from 'next/link'
-import { UserIcon } from 'lucide-react'
-import { buttonVariants } from '@/shared/ui'
+import { SidebarMenuButton } from '@/shared/ui'
 
 type Props = { email: string }
 
 export function UserMenu({ email }: Props) {
+  const initial = email[0]?.toUpperCase() ?? '?'
   return (
-    <Link href="/profile" className={buttonVariants({ variant: 'ghost', size: 'icon' })} aria-label={email}>
-      <UserIcon className="size-4" />
-    </Link>
+    <SidebarMenuButton size="lg" render={<Link href="/profile" aria-label={`Profile: ${email}`} />}>
+      <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-sidebar-accent text-xs font-bold uppercase">
+        {initial}
+      </div>
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-sm font-medium">{email}</p>
+      </div>
+    </SidebarMenuButton>
   )
 }

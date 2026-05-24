@@ -14,8 +14,8 @@ const tabs = [
 export function MobileTabBar() {
   const pathname = usePathname()
   return (
-    <nav className="fixed bottom-0 inset-x-0 z-40 border-t border-border bg-background md:hidden">
-      <div className="flex h-16 items-center justify-around px-4">
+    <nav className="fixed bottom-0 inset-x-0 z-40 border-t border-border bg-sidebar md:hidden">
+      <div className="flex h-[60px] items-center justify-around px-2">
         {tabs.map(({ href, label, Icon }) => {
           const active = pathname === href
           return (
@@ -23,11 +23,18 @@ export function MobileTabBar() {
               key={href}
               href={href}
               className={cn(
-                'flex flex-1 flex-col items-center gap-1 py-2 text-xs transition-colors',
+                'flex flex-1 flex-col items-center gap-1 rounded-xl py-2 text-[11px] font-medium transition-colors',
                 active ? 'text-foreground' : 'text-muted-foreground',
               )}
             >
-              <Icon className={cn('size-5', active && 'stroke-[2.5]')} />
+              <div
+                className={cn(
+                  'flex size-8 items-center justify-center rounded-xl transition-colors',
+                  active ? 'bg-muted' : '',
+                )}
+              >
+                <Icon className={cn('size-[18px]', active && 'stroke-[2.5]')} />
+              </div>
               <span>{label}</span>
             </Link>
           )

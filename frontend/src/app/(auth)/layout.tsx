@@ -4,7 +4,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       className="flex min-h-dvh items-center justify-center px-4 py-16"
       style={{
         background:
-          'radial-gradient(ellipse 80% 50% at 10% 0%, oklch(0.72 0.15 280 / 0.25) 0%, transparent 65%), radial-gradient(ellipse 60% 50% at 90% 100%, oklch(0.72 0.15 280 / 0.2) 0%, transparent 65%), var(--background)',
+          'radial-gradient(ellipse 70% 50% at 15% 0%, oklch(0.85 0.08 80 / 0.5) 0%, transparent 60%), radial-gradient(ellipse 60% 45% at 85% 100%, oklch(0.82 0.08 155 / 0.3) 0%, transparent 60%), var(--background)',
       }}
     >
       {children}

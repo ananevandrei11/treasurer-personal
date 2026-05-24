@@ -16,15 +16,16 @@ export async function TransactionsList({ page }: Props) {
 
   if (data.transactions.length === 0) {
     return (
-      <div className="py-16 text-center text-sm text-muted-foreground">
-        No transactions yet. Add your first one!
+      <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-card py-20 text-center">
+        <p className="text-sm font-medium text-muted-foreground">No transactions yet.</p>
+        <p className="mt-1 text-xs text-muted-foreground/70">Add your first one!</p>
       </div>
     )
   }
 
   return (
     <div>
-      <div className="divide-y divide-border rounded-lg border border-border">
+      <div className="space-y-2">
         {data.transactions.map((t) => (
           <TransactionItem key={t.id} transaction={t} category={categoryMap.get(t.categoryId)} />
         ))}

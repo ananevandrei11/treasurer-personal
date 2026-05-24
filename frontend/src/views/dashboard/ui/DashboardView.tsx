@@ -9,9 +9,12 @@ export async function DashboardView({ page }: Props) {
   const categories = await getCategories()
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-6">
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-xl font-semibold">Transactions</h1>
+    <div className="mx-auto max-w-3xl px-4 py-8 md:px-8">
+      <div className="mb-8 flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-extrabold tracking-tight">Transactions</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Track your income and expenses</p>
+        </div>
         <AddTransactionTrigger categories={categories} />
       </div>
 
@@ -24,15 +27,15 @@ export async function DashboardView({ page }: Props) {
 
 function TransactionsListSkeleton() {
   return (
-    <div className="divide-y divide-border rounded-lg border border-border">
+    <div className="space-y-2">
       {Array.from({ length: 5 }).map((_, i) => (
-        <div key={i} className="flex items-center gap-3 px-4 py-3">
-          <div className="size-9 rounded-full bg-muted animate-pulse" />
-          <div className="flex-1 space-y-1.5">
-            <div className="h-3 w-32 rounded bg-muted animate-pulse" />
-            <div className="h-2.5 w-20 rounded bg-muted animate-pulse" />
+        <div key={i} className="flex items-center gap-4 rounded-2xl bg-card px-5 py-4">
+          <div className="size-10 rounded-full bg-muted animate-pulse" />
+          <div className="flex-1 space-y-2">
+            <div className="h-3.5 w-36 rounded-full bg-muted animate-pulse" />
+            <div className="h-2.5 w-24 rounded-full bg-muted animate-pulse" />
           </div>
-          <div className="h-3 w-16 rounded bg-muted animate-pulse" />
+          <div className="h-3.5 w-20 rounded-full bg-muted animate-pulse" />
         </div>
       ))}
     </div>
