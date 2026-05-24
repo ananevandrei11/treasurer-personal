@@ -53,6 +53,46 @@ function useSidebar() {
   return context
 }
 
+// Encapsulates sidebar open-state backed by a cookie.
+// useSyncExternalStore handles hydration cleanly:
+//   - getServerSnapshot → defaultOpen (SSR / hydration pass, no cookie access)
+//   - getSnapshot       → reads the real cookie on the client
+//   - subscribe         → cookie writes happen only through the returned setter,
+//                         which calls notify() so React re-renders subscribers.
+function useSidebarState(defaultOpen: boolean): [boolean, (value: boolean) => void] {
+  const store = React.useMemo(() => {
+    const listeners = new Set<() => void>()
+    return {
+      subscribe: (cb: () => void) => {
+        listeners.add(cb)
+        return () => listeners.delete(cb)
+      },
+      notify: () => listeners.forEach((cb) => cb()),
+    }
+  }, [])
+
+  const open = React.useSyncExternalStore(
+    store.subscribe,
+    () => {
+      const cookie = document.cookie
+        .split("; ")
+        .find((row) => row.startsWith(`${SIDEBAR_COOKIE_NAME}=`))
+      return cookie ? cookie.split("=")[1] !== "false" : defaultOpen
+    },
+    () => defaultOpen
+  )
+
+  const setOpen = React.useCallback(
+    (value: boolean) => {
+      document.cookie = `${SIDEBAR_COOKIE_NAME}=${value}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
+      store.notify()
+    },
+    [store]
+  )
+
+  return [open, setOpen]
+}
+
 function SidebarProvider({
   defaultOpen = true,
   open: openProp,
@@ -69,23 +109,18 @@ function SidebarProvider({
   const isMobile = useIsMobile()
   const [openMobile, setOpenMobile] = React.useState(false)
 
-  // This is the internal state of the sidebar.
-  // We use openProp and setOpenProp for control from outside the component.
-  const [_open, _setOpen] = React.useState(defaultOpen)
+  // Internal cookie-backed state; openProp overrides when provided (controlled mode).
+  const [_open, _setOpen] = useSidebarState(defaultOpen)
   const open = openProp ?? _open
   const setOpen = React.useCallback(
     (value: boolean | ((value: boolean) => boolean)) => {
       const openState = typeof value === "function" ? value(open) : value
       if (setOpenProp) {
         setOpenProp(openState)
-      } else {
-        _setOpen(openState)
       }
-
-      // This sets the cookie to keep the sidebar state.
-      document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
+      _setOpen(openState)
     },
-    [setOpenProp, open]
+    [setOpenProp, open, _setOpen]
   )
 
   // Helper to toggle the sidebar.
@@ -604,10 +639,11 @@ function SidebarMenuSkeleton({
 }: React.ComponentProps<"div"> & {
   showIcon?: boolean
 }) {
-  // Random width between 50 to 90%.
-  const [width] = React.useState(() => {
-    return `${Math.floor(Math.random() * 40) + 50}%`
-  })
+  const [width, setWidth] = React.useState<string | undefined>(undefined)
+
+  React.useEffect(() => {
+    setWidth(`${Math.floor(Math.random() * 40) + 50}%`)
+  }, [])
 
   return (
     <div

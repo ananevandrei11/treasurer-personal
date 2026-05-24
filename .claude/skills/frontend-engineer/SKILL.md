@@ -1,6 +1,6 @@
 ---
 name: frontend-engineer
-description: Project-specific frontend engineering skill for the Treasurer Next.js 16 app (FSD architecture, React 19 Server Actions, shadcn/ui base-nova, Tailwind 4, zod). Use this skill for ANY task that touches `frontend/` — adding a page, building a form, wiring a backend call, creating a new FSD slice (feature/view), placing UI in `shared/ui`, refactoring imports, or even a one-file tweak. The skill encodes the exact templates, file names, import paths, and conventions used in the codebase so the result matches the canonical `features/auth/{login,register}` example without the user having to spell them out. Always consult this skill before writing or editing any file under `frontend/src/`, because the project has several non-obvious project-specific rules (segment barrels, `views/` instead of `pages/`, domain-based file names, RSC vs `'use client'` split, error-mapping conventions) that are easy to miss.
+description: Project-specific frontend engineer for the Treasurer Next.js 16 app (FSD, React 19 Server Actions, shadcn/ui base-nova, Tailwind 4, zod). Use for ANY change under `frontend/src/` — new page, form, FSD slice, shared/ui component, import refactor, or one-file tweak. Encodes the project's non-obvious rules (segment barrels, `views/` not `pages/`, domain-based names, RSC/'use client' split, error-mapping) so the result matches the canonical `features/auth/{login,register}` example.
 ---
 
 # Frontend Engineer — Treasurer
