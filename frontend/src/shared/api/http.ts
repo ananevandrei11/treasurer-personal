@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation'
 import { API_URL } from '@/shared/config'
-import { getAccessToken, getRefreshToken, setSession, clearSession } from '@/shared/lib'
-import type { TokenPair } from './auth'
+import { getAccessToken } from '@/shared/lib'
 
 export class ApiError extends Error {
   constructor(
@@ -38,6 +37,12 @@ export async function backendFetch<T>(path: string, init?: RequestInit): Promise
   return res.json() as Promise<T>
 }
 
+/**
+ * Authenticated backend call. Token freshness and rotation are handled by `src/proxy.ts`
+ * before this code runs, so we just attach the cookie. A 401 here means the token was
+ * invalidated server-side after the proxy passed — defer cookie cleanup to the route
+ * handler since `cookies().delete()` is not allowed from RSC.
+ */
 export async function fetchWithAuth<T>(path: string, init?: RequestInit): Promise<T> {
   const token = await getAccessToken()
 
@@ -47,28 +52,9 @@ export async function fetchWithAuth<T>(path: string, init?: RequestInit): Promis
       headers: { Authorization: `Bearer ${token}`, ...init?.headers },
     })
   } catch (err) {
-    if (!(err instanceof ApiError) || err.status !== 401) throw err
-  }
-
-  // access token expired — try refresh
-  const refreshToken = await getRefreshToken()
-  if (refreshToken) {
-    const res = await fetch(`${API_URL}/auth/refresh`, {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${refreshToken}` },
-      cache: 'no-store',
-    })
-
-    if (res.ok) {
-      const tokens = (await res.json()) as TokenPair
-      await setSession(tokens)
-      return backendFetch<T>(path, {
-        ...init,
-        headers: { Authorization: `Bearer ${tokens.accessToken}`, ...init?.headers },
-      })
+    if (err instanceof ApiError && err.status === 401) {
+      redirect('/api/auth/logout')
     }
+    throw err
   }
-
-  await clearSession()
-  redirect('/login')
 }

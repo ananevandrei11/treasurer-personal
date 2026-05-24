@@ -1,9 +1,7 @@
 'use server'
 
 import { cookies } from 'next/headers'
-
-const ACCESS_TOKEN = 'accessToken'
-const REFRESH_TOKEN = 'refreshToken'
+import { ACCESS_TOKEN, REFRESH_TOKEN } from '@/shared/config'
 
 const IS_PROD = process.env.NODE_ENV === 'production'
 
@@ -25,18 +23,7 @@ export async function setSession(tokens: { accessToken: string; refreshToken: st
   })
 }
 
-export async function clearSession() {
-  const store = await cookies()
-  store.delete(ACCESS_TOKEN)
-  store.delete(REFRESH_TOKEN)
-}
-
 export async function getAccessToken(): Promise<string | undefined> {
   const store = await cookies()
   return store.get(ACCESS_TOKEN)?.value
-}
-
-export async function getRefreshToken(): Promise<string | undefined> {
-  const store = await cookies()
-  return store.get(REFRESH_TOKEN)?.value
 }
