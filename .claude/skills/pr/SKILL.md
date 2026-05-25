@@ -8,6 +8,7 @@ allowedTools:
   - Bash(git *)
   - Bash(gh *)
   - Bash(pnpm *)
+  - Bash(bash *)
 ---
 
 # PR — Treasurer
@@ -27,7 +28,7 @@ If either argument is missing, ask the user to provide it before proceeding.
 ### 1. Validate state
 
 ```bash
-git log --oneline master..$1
+bash ${CLAUDE_SKILL_DIR}/scripts/validate.sh
 ```
 
 - If there are uncommitted changes, stop and tell the user to commit first (suggest `/commit`).
@@ -56,19 +57,10 @@ Look at commits ahead of master to understand what changed:
 
 ```bash
 git log --oneline master..$1
-git diff master..$1 --stat
+git diff master...$1 --stat
 ```
 
-Write a concise PR body:
-
-```
-## Summary
-- <bullet: what changed and why>
-
-## Test plan
-- [ ] <what to verify manually>
-- [ ] lint and typecheck pass
-```
+Write a concise PR body using the template at `${CLAUDE_SKILL_DIR}/template.md` — fill in the placeholders, don't change the section structure.
 
 Keep the summary to 2–4 bullets max. The test plan should be concrete — name specific pages, endpoints, or flows that need verification.
 
@@ -106,6 +98,6 @@ If the file is missing or empty, fall back to `gh auth status` to check existing
 - Base branch is always `master`.
 - Never skip lint/typecheck checks — they're required before review.
 - Never use `--draft` unless the user explicitly asks.
-- Never force-push.
+- Never force-push to `master`. Force-pushing the source feature branch after a rebase is expected and allowed — use `--force-with-lease`.
 - Never merge the PR — the user always merges manually.
 - Never print, echo, or log the token value — not in output, not in error messages.
