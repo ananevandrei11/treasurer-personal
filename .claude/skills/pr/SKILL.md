@@ -8,6 +8,7 @@ allowedTools:
   - Bash(git *)
   - Bash(gh *)
   - Bash(pnpm *)
+  - Bash(bash *)
 ---
 
 # PR — Treasurer
@@ -26,7 +27,9 @@ If either argument is missing, ask the user to provide it before proceeding.
 
 ### 1. Validate state
 
-Validate: !`bash ${CLAUDE_SKILL_DIR}/scripts/validate.sh`
+```bash
+bash ${CLAUDE_SKILL_DIR}/scripts/validate.sh
+```
 
 - If there are uncommitted changes, stop and tell the user to commit first (suggest `/commit`).
 - If there are no commits ahead of `master`, stop and warn that the branch has nothing to merge.
