@@ -98,6 +98,6 @@ If the file is missing or empty, fall back to `gh auth status` to check existing
 - Base branch is always `master`.
 - Never skip lint/typecheck checks — they're required before review.
 - Never use `--draft` unless the user explicitly asks.
-- Never force-push.
+- Never force-push to `master`. Force-pushing the source feature branch after a rebase is expected and allowed — use `--force-with-lease`.
 - Never merge the PR — the user always merges manually.
 - Never print, echo, or log the token value — not in output, not in error messages.
