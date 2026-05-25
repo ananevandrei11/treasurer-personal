@@ -26,9 +26,7 @@ If either argument is missing, ask the user to provide it before proceeding.
 
 ### 1. Validate state
 
-```bash
-git log --oneline master..$1
-```
+Validate: !`bash ${CLAUDE_SKILL_DIR}/scripts/validate.sh`
 
 - If there are uncommitted changes, stop and tell the user to commit first (suggest `/commit`).
 - If there are no commits ahead of `master`, stop and warn that the branch has nothing to merge.
@@ -56,19 +54,10 @@ Look at commits ahead of master to understand what changed:
 
 ```bash
 git log --oneline master..$1
-git diff master..$1 --stat
+git diff master...$1 --stat
 ```
 
-Write a concise PR body:
-
-```
-## Summary
-- <bullet: what changed and why>
-
-## Test plan
-- [ ] <what to verify manually>
-- [ ] lint and typecheck pass
-```
+Write a concise PR body using the template at `${CLAUDE_SKILL_DIR}/template.md` — fill in the placeholders, don't change the section structure.
 
 Keep the summary to 2–4 bullets max. The test plan should be concrete — name specific pages, endpoints, or flows that need verification.
 
