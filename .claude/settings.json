@@ -10,13 +10,8 @@
       "Grep",
       "LS"
     ],
-    "deny": [
-      "Read(**/.env*)"
-    ],
-    "ask": [
-      "Bash(git push *)",
-      "Bash(git commit *)"
-    ]
+    "deny": ["Read(**/.env*)"],
+    "ask": ["Bash(git push *)", "Bash(git commit *)"]
   },
   "enabledPlugins": {
     "frontend-design@claude-plugins-official": true,
@@ -30,6 +25,61 @@
           {
             "type": "command",
             "command": ".claude/hooks/frontend-design-guard.sh"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/notify.sh\""
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/notify.sh\""
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/protected.sh\""
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "if": "Edit(*.ts)|Write(*.ts)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path // empty' | xargs -I {} pnpm exec prettier --write --ignore-unknown {}"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "if": "Edit(*.ts)|Edit(*.tsx)|Write(*.ts)|Write(*.tsx)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "FILE=$(jq -r '.tool_input.file_path // empty'); [ -z \"$FILE\" ] && exit 0; case \"$FILE\" in */frontend/*) (cd frontend && pnpm exec eslint --fix \"$FILE\") ;; */backend/*) (cd backend && pnpm exec eslint --fix \"$FILE\") ;; esac"
           }
         ]
       }
