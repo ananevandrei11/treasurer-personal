@@ -138,7 +138,7 @@ features/<domain>/<action>/
 - Default: **Server Components** — no `'use client'` unless the component needs interactivity, hooks, or browser APIs
 - `'use client'` — interactive leaves in `features/*/ui/*.tsx`
 - `'use server'` — first line of every Server Action (`features/*/api/*-action.ts`, `shared/lib/session.ts`)
-- `app/(app)/layout.tsx` is an async RSC that reads cookies, calls `/users/me`, and `redirect('/login')` on failure — this is the auth gate
+- `app/dashboard/layout.tsx` is an async RSC that reads cookies, calls `/users/me`, and `redirect('/auth/login')` on failure — this is the auth gate
 
 ### HTTP client (`shared/api/http.ts`)
 

@@ -44,6 +44,6 @@ export async function createTransactionAction(
     return { ...initialState, formError: 'Something went wrong. Please try again.' }
   }
 
-  revalidatePath('/')
+  revalidatePath('/dashboard')
   return { fieldErrors: {}, formError: null, success: true }
 }

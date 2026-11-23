@@ -53,5 +53,5 @@ export async function registerAction(
     return { ...initialState, formError: 'Something went wrong. Please try again.' }
   }
 
-  redirect('/')
+  redirect('/dashboard')
 }

@@ -42,5 +42,5 @@ export async function loginAction(_prev: LoginState, formData: FormData): Promis
     return { ...initialState, formError: 'Something went wrong. Please try again.' }
   }
 
-  redirect('/')
+  redirect('/dashboard')
 }

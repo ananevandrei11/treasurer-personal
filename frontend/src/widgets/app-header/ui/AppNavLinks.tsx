@@ -5,8 +5,8 @@ import { usePathname } from 'next/navigation'
 import { cn } from '@/shared/lib'
 
 const links = [
-  { href: '/', label: 'Transactions' },
-  { href: '/categories', label: 'Categories' },
+  { href: '/dashboard', label: 'Transactions' },
+  { href: '/dashboard/categories', label: 'Categories' },
 ]
 
 export function AppNavLinks() {

@@ -38,6 +38,6 @@ export async function createCategoryAction(
     return { ...initialState, formError: 'Something went wrong. Please try again.' }
   }
 
-  revalidatePath('/categories')
+  revalidatePath('/dashboard/categories')
   return { fieldErrors: {}, formError: null, success: true }
 }

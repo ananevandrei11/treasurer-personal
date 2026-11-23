@@ -7,7 +7,7 @@ const ACCESS_MAX_AGE = 60 * 15
 const REFRESH_MAX_AGE = 60 * 60 * 24 * 7
 const EXP_SKEW_SECONDS = 10
 
-const PUBLIC_PATHS = new Set(['/login', '/register'])
+const PUBLIC_PATHS = new Set(['/auth/login', '/auth/register'])
 
 const cookieOptions = (maxAge: number) =>
   ({
@@ -41,7 +41,7 @@ function isFresh(token: string | undefined): boolean {
 }
 
 function redirectToLogin(request: NextRequest, clearRefresh: boolean) {
-  const res = NextResponse.redirect(new URL('/login', request.url))
+  const res = NextResponse.redirect(new URL('/auth/login', request.url))
   res.cookies.delete(ACCESS_TOKEN)
   if (clearRefresh) res.cookies.delete(REFRESH_TOKEN)
   return res

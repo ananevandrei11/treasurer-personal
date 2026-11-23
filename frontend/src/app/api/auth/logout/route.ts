@@ -5,5 +5,5 @@ export async function GET(request: Request) {
   const store = await cookies()
   store.delete('accessToken')
   store.delete('refreshToken')
-  return NextResponse.redirect(new URL('/login', request.url))
+  return NextResponse.redirect(new URL('/auth/login', request.url))
 }
