@@ -95,7 +95,7 @@ export function LoginForm() {
           <p className="text-center text-sm text-muted-foreground">
             Don&apos;t have an account?{' '}
             <Link
-              href="/register"
+              href="/auth/register"
             >
               Create One
             </Link>

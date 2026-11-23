@@ -7,7 +7,7 @@ import { Button } from '@/shared/ui'
 
 export default async function ProfilePage() {
   const token = await getAccessToken()
-  if (!token) redirect('/login')
+  if (!token) redirect('/auth/login')
 
   const user = await backendFetch<User>('/users/me', {
     headers: { Authorization: `Bearer ${token}` },

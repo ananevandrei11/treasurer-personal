@@ -6,9 +6,9 @@ import { ArrowLeftRightIcon, TagIcon, UserIcon } from 'lucide-react'
 import { cn } from '@/shared/lib'
 
 const tabs = [
-  { href: '/', label: 'Transactions', Icon: ArrowLeftRightIcon },
-  { href: '/categories', label: 'Categories', Icon: TagIcon },
-  { href: '/profile', label: 'Profile', Icon: UserIcon },
+  { href: '/dashboard', label: 'Transactions', Icon: ArrowLeftRightIcon },
+  { href: '/dashboard/categories', label: 'Categories', Icon: TagIcon },
+  { href: '/dashboard/profile', label: 'Profile', Icon: UserIcon },
 ]
 
 export function MobileTabBar() {

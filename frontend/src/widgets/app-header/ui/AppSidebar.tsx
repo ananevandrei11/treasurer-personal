@@ -15,8 +15,8 @@ import {
 import { UserMenu } from './UserMenu'
 
 const navItems = [
-  { href: '/', label: 'Transactions', icon: ArrowLeftRightIcon },
-  { href: '/categories', label: 'Categories', icon: TagIcon },
+  { href: '/dashboard', label: 'Transactions', icon: ArrowLeftRightIcon },
+  { href: '/dashboard/categories', label: 'Categories', icon: TagIcon },
 ]
 
 type Props = { email: string }
@@ -27,7 +27,7 @@ export function AppSidebar({ email }: Props) {
   return (
     <Sidebar collapsible="offcanvas">
       <SidebarHeader className="px-4 py-4">
-        <Link href="/" className="flex items-center gap-2.5 group">
+        <Link href="/dashboard" className="flex items-center gap-2.5 group">
           <div className="flex size-8 items-center justify-center rounded-xl bg-foreground text-background text-sm font-extrabold transition-transform group-hover:scale-95">
             T
           </div>
